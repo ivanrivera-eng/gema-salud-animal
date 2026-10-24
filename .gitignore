@@ -1,0 +1,10 @@
+# Material de referencia (manual de marca, capturas, video): queda solo en la PC
+referencias/
+
+# Configuración local de Claude y del servidor de vista previa
+.claude/
+
+# Archivos del sistema
+Thumbs.db
+desktop.ini
+.DS_Store
