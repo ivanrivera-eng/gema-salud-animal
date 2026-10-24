@@ -6,10 +6,12 @@
   <title>Gema Salud Animal</title>
   <meta name="claude:viewport-fit-sides" content="cover">
   <meta name="description" content="Gema Salud Animal es la obra social para tu perro o gato: consultas, vacunas, urgencias 24 h y cirugías con una cuota mensual fija.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4 56 22 32 60 8 22Z' fill='%230f766e'/%3E%3Cpath d='M8 22h48L32 60Z' fill='%23115e59'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta name="theme-color" content="#24193f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,15 +20,8 @@
   <header class="site-header" id="top">
     <div class="container header-inner">
       <a href="#top" class="logo" aria-label="Gema Salud Animal, inicio">
-        <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
-          <path d="M32 4 56 22 32 60 8 22Z" fill="var(--brand)"/>
-          <path d="M8 22h48L32 60Z" fill="var(--brand-dark)"/>
-          <path d="M20 22 32 4l12 18" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>
-          <circle cx="32" cy="34" r="5" fill="#fff"/>
-          <circle cx="24" cy="27" r="2.6" fill="#fff"/>
-          <circle cx="40" cy="27" r="2.6" fill="#fff"/>
-        </svg>
-        <span class="logo-text">Gema <em>Salud Animal</em></span>
+        <img class="logo-paw" src="img/huella.png" alt="" width="43" height="40">
+        <img class="logo-word" src="img/gema-texto-blanco.png" alt="Gema Salud animal" width="111" height="39">
       </a>
 
       <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Abrir menú">
@@ -45,15 +40,15 @@
 
   <main>
     <!-- ===== Hero ===== -->
-    <section class="hero">
+    <section class="hero paw-pattern">
       <div class="container hero-inner">
         <div class="hero-copy">
           <span class="eyebrow">Obra social para perros y gatos</span>
-          <h1>Su salud, cubierta.<br>Tu tranquilidad, también.</h1>
-          <p class="lead">Consultas, vacunas, urgencias las 24 h y cirugías con una cuota mensual fija. Sin sorpresas en la veterinaria, para que solo te ocupes de quererlo.</p>
+          <h1>Salud animal,<br><span>cuidado humano.</span></h1>
+          <p class="lead">Gema no espera a que tu mascota se enferme: acompaña su bienestar día a día con prevención, controles y atención veterinaria de calidad, por una cuota mensual fija.</p>
           <div class="hero-actions">
-            <a href="#planes" class="btn">Ver planes</a>
-            <a href="#como-funciona" class="btn btn-ghost">Cómo funciona</a>
+            <a href="#planes" class="btn btn-accent">Ver planes</a>
+            <a href="#como-funciona" class="btn btn-ghost-light">Cómo funciona</a>
           </div>
           <ul class="hero-points">
             <li>Sin límite de edad para ingresar</li>
@@ -63,30 +58,29 @@
         </div>
 
         <div class="hero-visual" aria-hidden="true">
-          <div class="blob"></div>
           <div class="credential">
-            <div class="credential-top">
-              <span class="credential-brand">
-                <svg viewBox="0 0 64 64"><path d="M32 4 56 22 32 60 8 22Z" fill="#fff"/></svg>
-                Gema Salud Animal
-              </span>
-              <span class="credential-plan">Plan Esmeralda</span>
+            <div class="cred-gem">
+              <svg viewBox="0 0 40 40"><path d="M8 14 14 7h12l6 7-12 19Z" fill="#fff" fill-opacity=".9"/><path d="M8 14h24L20 33Z" fill="#fff" fill-opacity=".55"/><path d="M14 7l6 7 6-7" fill="none" stroke="#2f9e57" stroke-width="1.5"/></svg>
+              <span><small>Plan</small>Esmeralda</span>
             </div>
-            <div class="credential-body">
-              <div class="pet-avatar">
-                <svg viewBox="0 0 80 80">
-                  <circle cx="40" cy="40" r="40" fill="#fde7d4"/>
-                  <path d="M18 20c4 10 6 16 4 24M62 20c-4 10-6 16-4 24" stroke="#b45309" stroke-width="7" stroke-linecap="round" fill="none"/>
-                  <ellipse cx="40" cy="46" rx="20" ry="18" fill="#d97706"/>
-                  <ellipse cx="40" cy="54" rx="10" ry="8" fill="#fde7d4"/>
-                  <circle cx="32" cy="42" r="3" fill="#1f2937"/>
-                  <circle cx="48" cy="42" r="3" fill="#1f2937"/>
-                  <ellipse cx="40" cy="51" rx="4" ry="3" fill="#1f2937"/>
-                </svg>
+            <div class="cred-main">
+              <div class="cred-pet">
+                <div class="pet-avatar">
+                  <svg viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="40" fill="#fff"/>
+                    <path d="M18 20c4 10 6 16 4 24M62 20c-4 10-6 16-4 24" stroke="#b45309" stroke-width="7" stroke-linecap="round" fill="none"/>
+                    <ellipse cx="40" cy="46" rx="20" ry="18" fill="#d97706"/>
+                    <ellipse cx="40" cy="54" rx="10" ry="8" fill="#fde7d4"/>
+                    <circle cx="32" cy="42" r="3" fill="#1f2937"/>
+                    <circle cx="48" cy="42" r="3" fill="#1f2937"/>
+                    <ellipse cx="40" cy="51" rx="4" ry="3" fill="#1f2937"/>
+                  </svg>
+                </div>
+                <p class="pet-name">Luna<small>Caniche</small></p>
               </div>
-              <div>
-                <p class="pet-name">Luna</p>
-                <p class="pet-meta">Caniche · 4 años</p>
+              <div class="cred-brand">
+                <img src="img/huella.png" alt="" width="86" height="80">
+                <img src="img/gema-texto-blanco.png" alt="" width="100" height="35">
               </div>
             </div>
             <div class="credential-foot">
@@ -94,8 +88,8 @@
               <div><small>Vigencia</small><strong>Activa</strong></div>
             </div>
           </div>
-          <div class="float-chip chip-1">✓ Vacuna antirrábica cubierta</div>
-          <div class="float-chip chip-2">Guardia 24 h · 0800 GEMA</div>
+          <div class="float-chip chip-1">✓ Vacunas del calendario</div>
+          <div class="float-chip chip-2">Controles de clínica libres</div>
         </div>
       </div>
     </section>
@@ -309,7 +303,7 @@
     </section>
 
     <!-- ===== Formulario ===== -->
-    <section class="section cta" id="sumate">
+    <section class="section cta paw-pattern" id="sumate">
       <div class="container cta-inner">
         <div class="cta-copy">
           <span class="eyebrow eyebrow-light">Sumate</span>
@@ -369,12 +363,9 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <div>
-        <a href="#top" class="logo logo-footer">
-          <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
-            <path d="M32 4 56 22 32 60 8 22Z" fill="var(--brand-light)"/>
-            <path d="M8 22h48L32 60Z" fill="var(--brand)"/>
-          </svg>
-          <span class="logo-text">Gema <em>Salud Animal</em></span>
+        <a href="#top" class="logo logo-footer" aria-label="Gema Salud Animal, inicio">
+          <img class="logo-paw" src="img/huella.png" alt="" width="54" height="50">
+          <img class="logo-word" src="img/gema-texto-blanco.png" alt="Gema Salud animal" width="128" height="45">
         </a>
         <p>La obra social para los que también son familia.</p>
       </div>
