@@ -54,7 +54,7 @@
           <ul class="hero-points">
             <li>Consultas de clínica libres</li>
             <li>Credencial digital en la app</li>
-            <li>Hasta 50 % off con tarjeta de crédito</li>
+            <li>Descuento por grupo familiar</li>
           </ul>
         </div>
 
@@ -158,7 +158,7 @@
               <li>Aplicación de inyectables</li>
               <li>Vacunas del calendario</li>
               <li>Desparasitación interna</li>
-              <li>Servicio estético</li>
+              <li>Servicio estético: baño</li>
             </ul>
             <a href="#cotizador" class="btn btn-ghost btn-block" data-cotizar="esmeralda">Cotizar Esmeralda</a>
           </article>
@@ -178,8 +178,9 @@
               <li><strong>Todo lo del plan Esmeralda</strong></li>
               <li>Castración</li>
               <li>Prácticas de consultorio</li>
-              <li>Diagnóstico por imágenes</li>
+              <li>Diagnóstico por imágenes: electrocardiograma, ecografía y radiografía</li>
               <li>Laboratorio</li>
+              <li>Servicio estético: baño y corte</li>
             </ul>
             <a href="#cotizador" class="btn btn-ghost btn-block" data-cotizar="zafiro">Cotizar Zafiro</a>
           </article>
@@ -197,9 +198,10 @@
             </div>
             <ul>
               <li><strong>Todo lo del plan Zafiro</strong></li>
-              <li>Consultas especiales</li>
-              <li>Atención domiciliaria</li>
-              <li>Servicio estético: baño, o baño y corte</li>
+              <li>Consultas con especialistas y a domicilio</li>
+              <li>Atención clínica en horario de guardia</li>
+              <li>Limpieza dental</li>
+              <li>Servicio estético: baño, y baño y corte</li>
             </ul>
             <a href="#cotizador" class="btn btn-ghost btn-block" data-cotizar="rubi">Cotizar Rubí</a>
           </article>
@@ -219,13 +221,13 @@
             <ul>
               <li><strong>Todo lo del plan Rubí</strong></li>
               <li>Cirugías generales e internaciones</li>
-              <li>Atención prioritaria</li>
-              <li>Servicio estético: baño y corte</li>
+              <li>Vacuna séxtuple con lepto</li>
+              <li>Topes más altos y carencias más cortas</li>
             </ul>
             <a href="#cotizador" class="btn btn-ghost btn-block" data-cotizar="diamante">Cotizar Diamante</a>
           </article>
         </div>
-        <p class="fine-print">Los descuentos aplican solo con tarjeta de crédito. Cada plan tiene carencias y topes según la práctica (por ejemplo, vacunas 30 días y cirugías 120 días); te informamos los tiempos exactos al afiliarte.</p>
+        <p class="fine-print">El descuento del precio aplica solo con tarjeta de crédito. Desde la 2.ª mascota se suma el descuento por grupo familiar. Mirá carencias y topes en el <a href="#detalle">detalle de planes</a>.</p>
       </div>
     </section>
 
@@ -235,48 +237,51 @@
         <div class="section-head">
           <span class="eyebrow">Cotizador</span>
           <h2>Calculá tu cuota en segundos</h2>
-          <p>Elegí el plan, cuántas mascotas querés sumar y cómo vas a pagar.</p>
+          <p>Indicá cuántas mascotas querés afiliar y qué servicios buscás: te mostramos qué plan los cubre y cuánto pagás por mes.</p>
         </div>
 
         <form class="quote-tool" id="quote-form" novalidate>
           <div class="quote-fields">
             <fieldset class="q-group">
-              <legend>1. Tu mascota</legend>
-              <div class="chips" role="radiogroup" aria-label="Especie">
-                <label class="chip"><input type="radio" name="q-especie" value="Perro" checked><span>Perro</span></label>
-                <label class="chip"><input type="radio" name="q-especie" value="Gato"><span>Gato</span></label>
-                <label class="chip"><input type="radio" name="q-especie" value="Perro y gato"><span>Perros y gatos</span></label>
-              </div>
+              <legend>1. ¿Cuántas mascotas querés afiliar?</legend>
               <div class="q-row">
                 <div class="field">
-                  <label for="q-edad">Edad</label>
-                  <select id="q-edad" name="q-edad">
-                    <option>Cachorro (menos de 1 año)</option>
-                    <option selected>Adulto (1 a 7 años)</option>
-                    <option>Senior (8 años o más)</option>
-                  </select>
+                  <label for="q-perros">Perros</label>
+                  <div class="stepper">
+                    <button type="button" data-target="q-perros" data-step="-1" aria-label="Quitar un perro">−</button>
+                    <input id="q-perros" name="q-perros" type="number" min="0" max="8" value="1" inputmode="numeric">
+                    <button type="button" data-target="q-perros" data-step="1" aria-label="Sumar un perro">+</button>
+                  </div>
                 </div>
                 <div class="field">
-                  <label for="q-cantidad">Cantidad de mascotas</label>
+                  <label for="q-gatos">Gatos</label>
                   <div class="stepper">
-                    <button type="button" data-step="-1" aria-label="Quitar una mascota">−</button>
-                    <input id="q-cantidad" name="q-cantidad" type="number" min="1" max="10" value="1" inputmode="numeric">
-                    <button type="button" data-step="1" aria-label="Sumar una mascota">+</button>
+                    <button type="button" data-target="q-gatos" data-step="-1" aria-label="Quitar un gato">−</button>
+                    <input id="q-gatos" name="q-gatos" type="number" min="0" max="8" value="0" inputmode="numeric">
+                    <button type="button" data-target="q-gatos" data-step="1" aria-label="Sumar un gato">+</button>
                   </div>
                 </div>
               </div>
+              <p class="q-hint" id="q-group-hint">Grupo familiar: desde la 2.ª mascota, cada una suma 10 % más de descuento.</p>
             </fieldset>
 
             <fieldset class="q-group">
-              <legend>2. Plan</legend>
+              <legend>2. ¿Qué servicios buscás?</legend>
+              <p class="q-hint">Elegí todos los que quieras y te recomendamos el plan que los cubre.</p>
+              <div class="chips chips-multi" id="q-servicios"></div>
+            </fieldset>
+
+            <fieldset class="q-group">
+              <legend>3. Plan</legend>
               <div class="q-plans" id="q-plans"></div>
+              <p class="q-hint q-missing" id="q-missing" hidden></p>
             </fieldset>
 
             <fieldset class="q-group">
-              <legend>3. Forma de pago</legend>
+              <legend>4. Forma de pago</legend>
               <div class="chips" role="radiogroup" aria-label="Forma de pago">
                 <label class="chip"><input type="radio" name="q-pago" value="credito" checked><span>Tarjeta de crédito (con descuento)</span></label>
-                <label class="chip"><input type="radio" name="q-pago" value="otro"><span>Otro medio de pago</span></label>
+                <label class="chip"><input type="radio" name="q-pago" value="otro"><span>Otros medios de pago</span></label>
               </div>
             </fieldset>
           </div>
@@ -284,10 +289,9 @@
           <aside class="quote-result" aria-live="polite">
             <p class="qr-label">Tu cuota mensual estimada</p>
             <p class="qr-total"><span id="qr-total">$0</span><small>/mes</small></p>
+            <p class="qr-plan">Plan <strong id="qr-plan">—</strong></p>
+            <ul class="qr-lines" id="qr-lines"></ul>
             <dl class="qr-detail">
-              <div><dt>Plan</dt><dd id="qr-plan">—</dd></div>
-              <div><dt>Precio por mascota</dt><dd id="qr-unit">—</dd></div>
-              <div><dt>Mascotas</dt><dd id="qr-qty">1</dd></div>
               <div class="qr-saving"><dt>Ahorro por mes</dt><dd id="qr-saving">—</dd></div>
             </dl>
             <a class="btn btn-accent btn-block" id="qr-whatsapp" href="https://wa.me/5491126719012" target="_blank" rel="noopener">
@@ -301,8 +305,108 @@
       </div>
     </section>
 
+    <!-- ===== Detalle de planes ===== -->
+    <section class="section section-tint" id="detalle">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Detalle de planes</span>
+          <h2>Qué incluye cada plan</h2>
+          <p>Coberturas, carencias (días desde el alta hasta poder usar cada servicio) y topes anuales.</p>
+        </div>
+
+        <div class="detail-tabs" role="tablist" aria-label="Detalle de planes">
+          <button type="button" role="tab" id="tab-incluye" aria-controls="panel-incluye" aria-selected="true">Incluye</button>
+          <button type="button" role="tab" id="tab-carencias" aria-controls="panel-carencias" aria-selected="false">Carencias</button>
+          <button type="button" role="tab" id="tab-topes" aria-controls="panel-topes" aria-selected="false">Topes</button>
+        </div>
+
+        <p class="swipe-hint">Deslizá la tabla hacia el costado para ver los 4 planes →</p>
+
+        <div class="detail-panel" id="panel-incluye" role="tabpanel" aria-labelledby="tab-incluye">
+          <div class="table-wrap">
+            <table class="plan-table">
+              <thead>
+                <tr><th scope="col">Cobertura</th><th scope="col" class="c-esmeralda">Esmeralda</th><th scope="col" class="c-zafiro">Zafiro</th><th scope="col" class="c-rubi">Rubí</th><th scope="col" class="c-diamante">Diamante</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Consultas y controles de clínica general</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr><th scope="row">Aplicación de inyectables</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr><th scope="row">Vacunas del calendario</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr><th scope="row">Desparasitación interna</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr><th scope="row">Castración</th><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr><th scope="row">Prácticas de consultorio</th><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr class="sub-head"><th scope="rowgroup" colspan="5"><span>Diagnóstico por imágenes</span></th></tr>
+                <tr class="sub"><th scope="row">Electrocardiograma</th><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr class="sub"><th scope="row">Ecografía</th><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr class="sub"><th scope="row">Radiografía</th><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr><th scope="row">Laboratorio</th><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr class="sub-head"><th scope="rowgroup" colspan="5"><span>Consultas especiales</span></th></tr>
+                <tr class="sub"><th scope="row">Consultas con especialistas</th><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr class="sub"><th scope="row">Consultas a domicilio</th><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr class="sub"><th scope="row">Atención clínica en horario de guardia</th><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr><th scope="row">Limpieza dental</th><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr><th scope="row">Cirugías generales e internaciones</th><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+                <tr class="sub-head"><th scope="rowgroup" colspan="5"><span>Servicio estético</span></th></tr>
+                <tr class="sub"><th scope="row">Baño</th><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+                <tr class="sub"><th scope="row">Baño y corte</th><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="detail-panel" id="panel-carencias" role="tabpanel" aria-labelledby="tab-carencias">
+          <div class="table-wrap">
+            <table class="plan-table">
+              <thead>
+                <tr><th scope="col">Carencia</th><th scope="col" class="c-esmeralda">Esmeralda</th><th scope="col" class="c-zafiro">Zafiro</th><th scope="col" class="c-rubi">Rubí</th><th scope="col" class="c-diamante">Diamante</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Castración</th><td class="no">No incluye</td><td>90 días</td><td>60 días</td><td>30 días</td></tr>
+                <tr><th scope="row">Prácticas de consultorio</th><td class="no">No incluye</td><td>60 días</td><td>30 días</td><td class="yes">Sin carencia</td></tr>
+                <tr><th scope="row">Diagnóstico por imágenes</th><td class="no">No incluye</td><td>60 días</td><td>30 días</td><td class="yes">Sin carencia</td></tr>
+                <tr><th scope="row">Laboratorio</th><td class="no">No incluye</td><td>60 días</td><td>30 días</td><td class="yes">Sin carencia</td></tr>
+                <tr><th scope="row">Consultas especiales</th><td class="no">No incluye</td><td class="no">No incluye</td><td>60 días</td><td>30 días</td></tr>
+                <tr><th scope="row">Limpieza dental</th><td class="no">No incluye</td><td class="no">No incluye</td><td>90 días</td><td>60 días</td></tr>
+                <tr><th scope="row">Cirugías generales e internaciones</th><td class="no">No incluye</td><td class="no">No incluye</td><td class="no">No incluye</td><td>180 días</td></tr>
+                <tr><th scope="row">Servicio estético</th><td>120 días</td><td>90 días</td><td>60 días</td><td>30 días</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="detail-panel" id="panel-topes" role="tabpanel" aria-labelledby="tab-topes">
+          <div class="table-wrap">
+            <table class="plan-table">
+              <thead>
+                <tr><th scope="col">Tope anual</th><th scope="col" class="c-esmeralda">Esmeralda</th><th scope="col" class="c-zafiro">Zafiro</th><th scope="col" class="c-rubi">Rubí</th><th scope="col" class="c-diamante">Diamante</th></tr>
+              </thead>
+              <tbody>
+                <tr class="sub-head"><th scope="rowgroup" colspan="5"><span>Vacunación</span></th></tr>
+                <tr class="sub"><th scope="row">Quíntuple</th><td>3 por año</td><td>3 por año</td><td>3 por año</td><td>3 por año</td></tr>
+                <tr class="sub"><th scope="row">Antirrábica</th><td>1 por año</td><td>1 por año</td><td>1 por año</td><td>1 por año</td></tr>
+                <tr class="sub"><th scope="row">Triple felina</th><td>2 por año</td><td>2 por año</td><td>2 por año</td><td>2 por año</td></tr>
+                <tr class="sub"><th scope="row">Séxtuple con lepto</th><td class="no">No incluye</td><td class="no">No incluye</td><td class="no">No incluye</td><td>1 por año</td></tr>
+                <tr><th scope="row">Inyectables</th><td>9 por año</td><td>12 por año</td><td>15 por año</td><td>18 por año</td></tr>
+                <tr><th scope="row">Desparasitación interna</th><td>4 por año</td><td>4 por año</td><td>4 por año</td><td>4 por año</td></tr>
+                <tr><th scope="row">Prácticas de consultorio</th><td class="no">No incluye</td><td>1 por año</td><td>2 por año</td><td>3 por año</td></tr>
+                <tr><th scope="row">Diagnóstico por imágenes</th><td class="no">No incluye</td><td>1 por año</td><td>2 por año</td><td>3 por año</td></tr>
+                <tr><th scope="row">Laboratorio</th><td class="no">No incluye</td><td>1 por año</td><td>2 por año</td><td>3 por año</td></tr>
+                <tr><th scope="row">Consultas especiales</th><td class="no">No incluye</td><td class="no">No incluye</td><td>2 por año</td><td>3 por año</td></tr>
+                <tr><th scope="row">Limpieza dental</th><td class="no">No incluye</td><td class="no">No incluye</td><td>1 por año</td><td>2 por año</td></tr>
+                <tr><th scope="row">Cirugías generales e internaciones</th><td class="no">No incluye</td><td class="no">No incluye</td><td class="no">No incluye</td><td>1 por año</td></tr>
+                <tr class="sub-head"><th scope="rowgroup" colspan="5"><span>Servicio estético</span></th></tr>
+                <tr class="sub"><th scope="row">Baño</th><td>2 por año</td><td class="no">No incluye</td><td>2 por año</td><td>3 por año</td></tr>
+                <tr class="sub"><th scope="row">Baño y corte</th><td class="no">No incluye</td><td>2 por año</td><td>2 por año</td><td>3 por año</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="fine-print">Las consultas y controles de clínica general son libres en todos los planes.</p>
+      </div>
+    </section>
+
     <!-- ===== App ===== -->
-    <section class="section section-tint app-section" id="app">
+    <section class="section app-section" id="app">
       <div class="container app-inner">
         <div class="app-copy">
           <span class="eyebrow">App Gema</span>
@@ -361,7 +465,7 @@
     </section>
 
     <!-- ===== Cartilla ===== -->
-    <section class="section" id="cartilla">
+    <section class="section section-tint" id="cartilla">
       <div class="container">
         <div class="section-head">
           <span class="eyebrow">Cartilla</span>
@@ -389,7 +493,7 @@
     </section>
 
     <!-- ===== FAQ ===== -->
-    <section class="section section-tint" id="faq">
+    <section class="section" id="faq">
       <div class="container container-narrow">
         <div class="section-head">
           <span class="eyebrow">Preguntas frecuentes</span>
@@ -406,7 +510,7 @@
           </details>
           <details>
             <summary>¿A partir de cuándo puedo usar el servicio?</summary>
-            <p>Los servicios tienen un período de carencia variable según el tipo de práctica (por ejemplo, vacunas 30 días y cirugías 120 días). Te informamos los tiempos exactos al momento de la afiliación.</p>
+            <p>Las consultas y controles de clínica general se pueden usar desde el alta. Otros servicios tienen un período de carencia que depende del plan: por ejemplo, la castración va de 30 días en Diamante a 90 días en Zafiro. Podés ver todos en el <a href="#detalle">detalle de planes</a>.</p>
           </details>
           <details>
             <summary>¿Qué mascotas pueden acceder al plan?</summary>
