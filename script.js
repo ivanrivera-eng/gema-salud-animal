@@ -38,6 +38,38 @@ const precioPlan = (p, conCredito) => p.base * (conCredito ? 1 - p.credito : 1);
 const descuentoGrupo = posicion => Math.min(posicion - 1, MAX_MASCOTAS - 1) * DESCUENTO_POR_MASCOTA; // posicion empieza en 1
 const waLink = texto => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
 
+// ===== Gemas de los planes =====
+// Gema facetada en SVG: cada faceta es un tono del color del plan, con un reflejo que la recorre de vez en cuando.
+const tono = (hex, k) => { // k > 0 aclara hacia blanco, k < 0 oscurece hacia negro
+  const n = parseInt(hex.slice(1), 16);
+  const rgb = [n >> 16, (n >> 8) & 255, n & 255].map(v => Math.round(k >= 0 ? v + (255 - v) * k : v * (1 + k)));
+  return '#' + rgb.map(v => v.toString(16).padStart(2, '0')).join('');
+};
+let gemaN = 0;
+function gemaSVG(color) {
+  const id = 'gema' + (++gemaN);
+  const faceta = (puntos, k) => `<path d="M${puntos}Z" fill="${tono(color, k)}"/>`;
+  return `<span class="gem-wrap" style="--d:${(gemaN % 4) * -1.7}s"><svg class="gem" viewBox="0 0 48 44" aria-hidden="true">
+    <defs>
+      <clipPath id="${id}c"><path d="M15 5h18l12 11-21 25L3 16Z"/></clipPath>
+      <linearGradient id="${id}s" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    </defs>
+    ${faceta('3 16 15 5 13 16', .28)}
+    ${faceta('15 5 24 16 13 16', .5)}
+    ${faceta('15 5 33 5 24 16', .68)}
+    ${faceta('33 5 35 16 24 16', .38)}
+    ${faceta('33 5 45 16 35 16', .12)}
+    ${faceta('3 16 13 16 24 41', -.1)}
+    ${faceta('13 16 24 16 24 41', .16)}
+    ${faceta('24 16 35 16 24 41', -.28)}
+    ${faceta('35 16 45 16 24 41', -.46)}
+    <path d="M3 16h42" stroke="#fff" stroke-opacity=".6" stroke-width=".8"/>
+    <path d="M15 5h18l12 11-21 25L3 16Z" fill="none" stroke="${tono(color, -.4)}" stroke-opacity=".45" stroke-width=".8" stroke-linejoin="round"/>
+    <g clip-path="url(#${id}c)"><rect class="gem-shine" x="-22" y="-6" width="12" height="56" fill="url(#${id}s)"/></g>
+    <path class="gem-spark" d="M18 8.5l.9 2.2 2.2.9-2.2.9-.9 2.2-.9-2.2-2.2-.9 2.2-.9Z" fill="#fff"/>
+  </svg></span>`;
+}
+
 // ===== Menú móvil =====
 const toggle = document.querySelector('.nav-toggle');
 const nav = document.getElementById('nav');
@@ -65,6 +97,7 @@ window.addEventListener('scroll', () => {
 document.querySelectorAll('.plan[data-plan]').forEach(card => {
   const p = PLANES[card.dataset.plan];
   card.style.setProperty('--gem', p.color);
+  card.querySelector('svg.gem').outerHTML = gemaSVG(p.color);
   card.querySelector('.price-list').textContent = pesos(p.base);
   card.querySelector('.amount').textContent = pesos(precioPlan(p, true));
   card.querySelector('.price-note').innerHTML = `<b>${pct(p.credito)} off</b> con tarjeta de crédito`;
@@ -75,7 +108,7 @@ const qForm = document.getElementById('quote-form');
 const qPlans = document.getElementById('q-plans');
 const qPerros = document.getElementById('q-perros');
 const qGatos = document.getElementById('q-gatos');
-const gemSvg = '<svg class="gem" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 14 14 7h12l6 7-12 19Z"/><path d="M8 14h24L20 33Z" fill-opacity=".6"/></svg>';
+let nombreMascota = ''; // llega desde la credencial de demostración de la portada
 
 document.getElementById('q-servicios').innerHTML = SERVICIOS.map(s => `
   <label class="chip"><input type="checkbox" name="q-servicio" value="${s.id}"><span>${s.nombre}</span></label>`).join('');
@@ -87,10 +120,12 @@ qPlans.innerHTML = ORDEN_PLANES.map((id, i) => {
     <input type="radio" name="q-plan" value="${id}" ${i === 0 ? 'checked' : ''}>
     <span class="q-plan-body">
       <span class="q-plan-tag">Recomendado</span>
-      ${gemSvg}
-      <span class="q-plan-name">${p.nombre}</span>
-      <span class="q-plan-price"></span>
-      <span class="q-plan-fit"></span>
+      ${gemaSVG(p.color)}
+      <span class="q-plan-text">
+        <span class="q-plan-name">${p.nombre}</span>
+        <span class="q-plan-price"></span>
+        <span class="q-plan-fit"></span>
+      </span>
     </span>
   </label>`;
 }).join('');
@@ -163,6 +198,8 @@ function cotizar({ desdeServicios = false } = {}) {
 
   document.getElementById('qr-total').textContent = pesos(suma);
   document.getElementById('qr-plan').textContent = plan.nombre;
+  document.getElementById('qr-for').hidden = !nombreMascota;
+  document.getElementById('qr-for-name').textContent = nombreMascota;
   document.getElementById('qr-lines').innerHTML = total
     ? lineas.map(l => `<li><span>${l.etiqueta}${l.descuento ? ` <em>−${pct(l.descuento)} grupo</em>` : ''}</span><b>${pesos(l.precio)}</b></li>`).join('')
     : '<li class="qr-empty">Sumá al menos un perro o un gato.</li>';
@@ -177,6 +214,7 @@ function cotizar({ desdeServicios = false } = {}) {
     .filter(Boolean).join(' y ');
   const mensaje = [
     'Hola Gema, quiero afiliar a mis mascotas. Hice esta cotización en la web:',
+    nombreMascota ? `• Nombre: ${nombreMascota}` : '',
     `• Mascotas: ${detalleMascotas || '—'}`,
     servicios.length ? `• Servicios que busco: ${servicios.map(s => s.nombre.toLowerCase()).join(', ')}` : '',
     `• Plan: ${plan.nombre}`,
@@ -228,6 +266,45 @@ document.querySelectorAll('[data-cotizar]').forEach(link => {
 
 cotizar();
 
+// ===== Portada: credencial de demostración =====
+// Nada se envía ni se guarda: el nombre solo viaja al cotizador y al mensaje de WhatsApp.
+const demoForm = document.getElementById('demo-form');
+const demoNombre = document.getElementById('demo-nombre');
+const credName = document.getElementById('cred-name');
+const especieDemo = () => demoForm.querySelector('[name="demo-especie"]:checked').value;
+const nombreDemo = () => demoNombre.value.trim() || 'Milo';
+
+function actualizarDemo() {
+  const nombre = nombreDemo();
+  const gato = especieDemo() === 'gato';
+  if (credName.textContent !== nombre) {
+    credName.textContent = nombre;
+    credName.classList.remove('pop');
+    void credName.offsetWidth; // reinicia la animación
+    credName.classList.add('pop');
+  }
+  document.getElementById('cred-especie').textContent = gato ? 'Gato' : 'Perro';
+  document.querySelector('.pet-perro').toggleAttribute('hidden', gato); // los SVG no tienen la propiedad .hidden
+  document.querySelector('.pet-gato').toggleAttribute('hidden', !gato);
+  document.querySelectorAll('.pet-ref').forEach(el => { el.textContent = nombre; });
+  document.getElementById('demo-cta').textContent = `Conocé los planes para ${nombre}`;
+}
+demoForm.addEventListener('input', actualizarDemo);
+demoForm.addEventListener('change', actualizarDemo);
+
+demoForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const gato = especieDemo() === 'gato';
+  nombreMascota = demoNombre.value.trim();
+  qPerros.value = gato ? 0 : 1;
+  qGatos.value = gato ? 1 : 0;
+  cotizar();
+  const lead = document.getElementById('lead-form');
+  if (nombreMascota) lead.mascota.value = nombreMascota;
+  lead.especie.value = gato ? 'Gato' : 'Perro';
+  document.getElementById('cotizador').scrollIntoView({ behavior: 'smooth' });
+});
+
 // ===== Detalle de planes: solapas =====
 const tabs = document.querySelectorAll('.detail-tabs [role="tab"]');
 function mostrarSolapa(tab) {
@@ -253,8 +330,7 @@ mostrarSolapa(tabs[0]);
 // ===== Dibujo decorativo del QR de la placa =====
 // Patrón fijo con forma de QR (no se puede escanear): tres marcas de esquina y módulos pseudoaleatorios.
 (function dibujarQR() {
-  const svg = document.getElementById('qr-art');
-  if (!svg) return;
+  const svgs = ['qr-art', 'cred-qr'].map(id => document.getElementById(id)).filter(Boolean);
   const n = 25;
   const esMarca = (x, y) => (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7);
   let semilla = 7;
@@ -267,7 +343,7 @@ mostrarSolapa(tabs[0]);
   }
   const marca = (x, y) => `M${x} ${y}h7v7h-7zM${x + 1} ${y + 1}v5h5v-5zM${x + 2} ${y + 2}h3v3h-3z`;
   d += marca(0, 0) + marca(n - 7, 0) + marca(0, n - 7);
-  svg.innerHTML = `<path d="${d}" fill-rule="evenodd"/>`;
+  svgs.forEach(svg => { svg.innerHTML = `<path d="${d}" fill-rule="evenodd"/>`; });
 })();
 
 // ===== Formulario de contacto: continúa en WhatsApp =====
