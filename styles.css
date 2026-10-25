@@ -323,6 +323,10 @@ p { margin: 0 0 1em; }
 .qr-saving.muted dd { color: rgba(255,255,255,.75); font-weight: 500; }
 .qr-note { margin: 4px 0 0; font-size: .78rem; color: rgba(255,255,255,.65); text-align: center; }
 .wa-icon { width: 1.3em; height: 1.3em; flex-shrink: 0; }
+.quote-side { display: grid; gap: 18px; align-content: start; min-width: 0; }
+.quote-side .quote-result { position: static; }
+.q-group-plan .q-plans { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.q-group-plan .q-plan-body { padding: 14px 8px 10px; }
 .q-hint { margin: 12px 0 0; color: var(--ink-soft); font-size: .85rem; }
 .q-group > .q-hint:first-of-type { margin: 0 0 12px; }
 .q-missing { padding: 10px 14px; border-radius: 12px; background: var(--yellow-20); color: var(--ink); }
@@ -410,11 +414,79 @@ p { margin: 0 0 1em; }
 /* Cartilla */
 .cartilla { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: stretch; }
 .map-frame { position: relative; min-height: 460px; border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: var(--violet-tint); }
-.map-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+/* El iframe sube para ocultar la barra superior de My Maps (título y autor del mapa) */
+.map-frame iframe { position: absolute; left: 0; top: -86px; width: 100%; height: calc(100% + 86px); border: 0; }
+.cartilla-side h3 { margin: 0; color: var(--night); font-size: 1.2rem; }
 .cartilla-side { display: flex; flex-direction: column; gap: 14px; padding: 28px; border-radius: 22px; background: var(--violet-tint); }
 .cs-stat strong { display: block; font-size: 2rem; font-weight: 800; color: var(--violet); line-height: 1.1; }
 .cs-stat span { color: var(--ink-soft); font-size: .92rem; }
 .cartilla-side p { margin: 4px 0; color: var(--ink-soft); font-size: .92rem; flex: 1; }
+
+/* Mascotas perdidas */
+.lost-inner { display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: center; }
+.lost-copy { min-width: 0; }
+.lost-cards { display: grid; gap: 14px; margin: 24px 0 28px; }
+.lost-card { display: flex; gap: 14px; align-items: flex-start; padding: 18px 20px; border-radius: var(--radius); background: #fff; border-left: 5px solid var(--lc); }
+.lost-card h3 { margin: 0 0 4px; font-size: 1.05rem; color: var(--night); }
+.lost-card p { margin: 0; color: var(--ink-soft); font-size: .92rem; }
+.lc-perdida { --lc: var(--coral); }
+.lc-encontrada { --lc: var(--emerald); }
+.lc-adopcion { --lc: var(--violet-soft); }
+.lc-icon { display: grid; place-items: center; flex-shrink: 0; width: 42px; height: 42px; border-radius: 12px; background: color-mix(in srgb, var(--lc) 14%, #fff); }
+.lc-icon svg { width: 22px; height: 22px; fill: none; stroke: var(--lc); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.lost-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start; min-width: 0; }
+.lost-gallery .phone:nth-child(2) { margin-top: 36px; }
+
+/* Placa con QR */
+.qr-inner { display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center; }
+.qr-copy { min-width: 0; }
+.qr-visual { position: relative; display: grid; place-items: center; min-height: 420px; }
+.qr-visual::before {
+  content: ""; position: absolute; width: 360px; height: 360px; max-width: 100%; border-radius: 50%;
+  background: radial-gradient(circle, var(--violet-20), rgba(224, 213, 234, 0) 70%);
+}
+.tag {
+  position: relative;
+  width: 260px; height: 260px; max-width: 80vw; max-height: 80vw;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--violet-soft), var(--violet) 55%, var(--night));
+  box-shadow: 0 30px 50px -22px rgba(36, 25, 63, .6), inset 0 2px 6px rgba(255,255,255,.35);
+  transform: rotate(-8deg);
+}
+.tag-ring {
+  position: absolute; top: -34px; left: 50%; width: 52px; height: 52px; margin-left: -26px;
+  border: 7px solid #c9c2d4; border-radius: 50%;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.25);
+}
+.tag::after { content: ""; position: absolute; top: 12px; left: 50%; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--violet-tint); box-shadow: inset 0 2px 3px rgba(0,0,0,.35); }
+.tag-face { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 14px 10px; border-radius: 18px; background: #fff; }
+.qr-art { width: 120px; height: 120px; fill: var(--night); }
+.tag-name { font-weight: 800; letter-spacing: .2em; color: var(--violet); font-size: .9rem; }
+.qr-alert {
+  position: absolute; right: 0; bottom: 12%;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-radius: 16px;
+  background: #fff; box-shadow: var(--shadow);
+  animation: float 5s ease-in-out infinite;
+}
+.qr-alert strong { display: block; color: var(--night); font-size: .92rem; }
+.qr-alert span { color: var(--ink-soft); font-size: .8rem; }
+.qa-pin { display: grid; place-items: center; flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; background: var(--coral); }
+.qa-pin svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.qr-steps { list-style: none; counter-reset: paso; margin: 22px 0 14px; padding: 0; display: grid; gap: 12px; }
+.qr-steps li { counter-increment: paso; position: relative; padding-left: 46px; color: var(--ink-soft); }
+.qr-steps li::before {
+  content: counter(paso); position: absolute; left: 0; top: -2px;
+  display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px;
+  background: var(--yellow); color: var(--night); font-weight: 800;
+}
+.qr-steps strong { color: var(--night); }
+.qr-extra { padding: 12px 16px; border-radius: 12px; background: var(--violet-tint); color: var(--ink); font-size: .92rem; }
+.qr-buy { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+.qr-option { display: flex; flex-direction: column; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); }
+.qr-option h3 { margin: 0 0 2px; font-size: 1.05rem; color: var(--night); }
+.qr-option p { margin: 0 0 14px; color: var(--ink-soft); font-size: .9rem; flex: 1; }
 
 /* WhatsApp flotante */
 .wa-float {
@@ -505,7 +577,16 @@ p { margin: 0 0 1em; }
 }
 
 @media (max-width: 960px) {
-  .hero-inner, .cta-inner, .app-inner, .quote-tool, .cartilla { grid-template-columns: 1fr; }
+  .hero-inner, .cta-inner, .app-inner, .quote-tool, .cartilla, .lost-inner, .qr-inner { grid-template-columns: 1fr; }
+  .q-group-plan .q-plans { grid-template-columns: repeat(4, 1fr); }
+  .lost-gallery {
+    display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
+    padding-bottom: 12px; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+    padding-inline: max(16px, env(safe-area-inset-left, 0px));
+  }
+  .lost-gallery .phone { flex: 0 0 200px; scroll-snap-align: center; }
+  .lost-gallery .phone:nth-child(2) { margin-top: 0; }
+  .qr-visual { min-height: 360px; order: 2; }
   .hero { padding-top: 32px; }
   .hero-visual { min-height: 380px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -523,7 +604,12 @@ p { margin: 0 0 1em; }
 @media (max-width: 640px) {
   .plans { grid-template-columns: 1fr; max-width: 440px; margin-inline: auto; }
   .plan-desc { min-height: 0; }
-  .q-plans { grid-template-columns: repeat(2, 1fr); }
+  .q-plans, .q-group-plan .q-plans { grid-template-columns: repeat(2, 1fr); }
+  .qr-buy { grid-template-columns: 1fr; }
+  .tag { width: 220px; height: 220px; }
+  .qr-art { width: 100px; height: 100px; }
+  .qr-visual { display: flex; flex-direction: column; align-items: center; gap: 28px; min-height: 0; padding-top: 44px; }
+  .qr-alert { position: static; animation: none; }
   .q-group { padding: 18px; }
   .wa-label { display: none; }
   .wa-float { padding: 10px; }

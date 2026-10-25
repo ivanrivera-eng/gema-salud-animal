@@ -136,8 +136,7 @@ function cotizar({ desdeServicios = false } = {}) {
     const falta = faltantes(id, servicios);
     label.querySelector('.q-plan-price').textContent = pesos(precioPlan(PLANES[id], credito)) + '/mes';
     const fit = label.querySelector('.q-plan-fit');
-    fit.textContent = !servicios.length ? '' : falta.length ? `Le faltan ${falta.length}` : '✓ Cubre todo';
-    fit.classList.toggle('ok', servicios.length > 0 && !falta.length);
+    fit.textContent = servicios.length && falta.length ? `Le ${falta.length === 1 ? 'falta 1 servicio' : `faltan ${falta.length} servicios`}` : '';
     label.classList.toggle('is-recommended', servicios.length > 0 && id === recomendado);
   });
 
@@ -251,6 +250,26 @@ tabs.forEach((tab, i) => {
 });
 mostrarSolapa(tabs[0]);
 
+// ===== Dibujo decorativo del QR de la placa =====
+// Patrón fijo con forma de QR (no se puede escanear): tres marcas de esquina y módulos pseudoaleatorios.
+(function dibujarQR() {
+  const svg = document.getElementById('qr-art');
+  if (!svg) return;
+  const n = 25;
+  const esMarca = (x, y) => (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7);
+  let semilla = 7;
+  const azar = () => (semilla = (semilla * 9301 + 49297) % 233280) / 233280;
+  let d = '';
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      if (!esMarca(x, y) && azar() < 0.48) d += `M${x} ${y}h1v1h-1z`;
+    }
+  }
+  const marca = (x, y) => `M${x} ${y}h7v7h-7zM${x + 1} ${y + 1}v5h5v-5zM${x + 2} ${y + 2}h3v3h-3z`;
+  d += marca(0, 0) + marca(n - 7, 0) + marca(0, n - 7);
+  svg.innerHTML = `<path d="${d}" fill-rule="evenodd"/>`;
+})();
+
 // ===== Formulario de contacto: continúa en WhatsApp =====
 const form = document.getElementById('lead-form');
 const msg = form.querySelector('.form-msg');
@@ -283,7 +302,7 @@ form.addEventListener('submit', e => {
 });
 
 // ===== Animación de aparición al hacer scroll =====
-const revealTargets = document.querySelectorAll('.section-head, .steps li, .plan, .quote-tool, .detail-panel, .app-copy, .phone, .cartilla, .faq details, .form');
+const revealTargets = document.querySelectorAll('.section-head, .steps li, .plan, .quote-tool, .detail-panel, .app-copy, .phone, .lost-card, .qr-copy, .qr-visual, .cartilla, .faq details, .form');
 revealTargets.forEach(el => el.classList.add('reveal'));
 
 const observer = new IntersectionObserver(entries => {

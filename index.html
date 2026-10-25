@@ -32,6 +32,7 @@
         <a href="#planes">Planes</a>
         <a href="#cotizador">Cotizador</a>
         <a href="#app">App</a>
+        <a href="#perdidas">Mascotas perdidas</a>
         <a href="#cartilla">Cartilla</a>
         <a href="#faq">Preguntas</a>
         <a href="#cotizador" class="btn btn-small">Cotizá tu plan</a>
@@ -92,16 +93,6 @@
           <div class="float-chip chip-1">✓ Vacunas del calendario</div>
           <div class="float-chip chip-2">Controles de clínica libres</div>
         </div>
-      </div>
-    </section>
-
-    <!-- ===== Cifras ===== -->
-    <section class="stats">
-      <div class="container stats-grid">
-        <div><strong>100+</strong><span>profesionales veterinarios en la red</span></div>
-        <div><strong>+50</strong><span>instituciones adheridas</span></div>
-        <div><strong>4</strong><span>planes para cada etapa</span></div>
-        <div><strong>100 %</strong><span>gestión digital desde la app</span></div>
       </div>
     </section>
 
@@ -272,19 +263,20 @@
             </fieldset>
 
             <fieldset class="q-group">
-              <legend>3. Plan</legend>
-              <div class="q-plans" id="q-plans"></div>
-              <p class="q-hint q-missing" id="q-missing" hidden></p>
-            </fieldset>
-
-            <fieldset class="q-group">
-              <legend>4. Forma de pago</legend>
+              <legend>3. Forma de pago</legend>
               <div class="chips" role="radiogroup" aria-label="Forma de pago">
                 <label class="chip"><input type="radio" name="q-pago" value="credito" checked><span>Tarjeta de crédito (con descuento)</span></label>
                 <label class="chip"><input type="radio" name="q-pago" value="otro"><span>Otros medios de pago</span></label>
               </div>
             </fieldset>
           </div>
+
+          <div class="quote-side">
+          <fieldset class="q-group q-group-plan">
+            <legend>4. Plan</legend>
+            <div class="q-plans" id="q-plans"></div>
+            <p class="q-hint q-missing" id="q-missing" hidden></p>
+          </fieldset>
 
           <aside class="quote-result" aria-live="polite">
             <p class="qr-label">Tu cuota mensual estimada</p>
@@ -301,6 +293,7 @@
             <a class="btn btn-ghost-light btn-block" href="https://app.gemasa.com.ar" target="_blank" rel="noopener">Afiliate desde la app</a>
             <p class="qr-note">Valores de referencia. Confirmá condiciones, carencias y topes con un asesor.</p>
           </aside>
+          </div>
         </form>
       </div>
     </section>
@@ -464,6 +457,99 @@
       </div>
     </section>
 
+    <!-- ===== Mascotas perdidas ===== -->
+    <section class="section section-tint" id="perdidas">
+      <div class="container lost-inner">
+        <div class="lost-copy">
+          <span class="eyebrow">Comunidad Gema</span>
+          <h2>Mascotas perdidas, encontradas y en adopción</h2>
+          <p class="app-lead">Una sección de la app abierta a todos, afiliados o no. Publicás en minutos y la comunidad de Gema recibe el aviso.</p>
+          <div class="lost-cards">
+            <article class="lost-card lc-perdida">
+              <span class="lc-icon"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20Z"/><path d="M12 10v4M12 17h.01"/></svg></span>
+              <div>
+                <h3>Se me perdió</h3>
+                <p>Publicá fotos, señas y dónde la viste por última vez. Todos los que tienen la app de Gema reciben una alerta, y podés ofrecer recompensa.</p>
+              </div>
+            </article>
+            <article class="lost-card lc-encontrada">
+              <span class="lc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span>
+              <div>
+                <h3>Encontré una mascota</h3>
+                <p>Contá dónde la encontraste para que su familia la ubique. Si tiene la placa Gema, escaneá el QR y avisá al instante.</p>
+              </div>
+            </article>
+            <article class="lost-card lc-adopcion">
+              <span class="lc-icon"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg></span>
+              <div>
+                <h3>Doy en adopción</h3>
+                <p>Publicá uno o varios animalitos, incluso una camada entera, con sus fotos, datos y requisitos de adopción.</p>
+              </div>
+            </article>
+          </div>
+          <div class="app-actions">
+            <a href="https://app.gemasa.com.ar" class="btn" target="_blank" rel="noopener">Publicá desde la app</a>
+          </div>
+        </div>
+        <div class="lost-gallery" aria-label="Pantallas de Comunidad en la app">
+          <figure class="phone">
+            <img src="img/app/comunidad.jpg" alt="Inicio de Comunidad: publicar mascota, mascotas perdidas y encontradas" width="480" height="975" loading="lazy">
+            <figcaption>Comunidad</figcaption>
+          </figure>
+          <figure class="phone">
+            <img src="img/app/perdida.jpg" alt="Formulario para publicar una mascota perdida, con fotos, título y descripción" width="480" height="975" loading="lazy">
+            <figcaption>Publicar perdida</figcaption>
+          </figure>
+          <figure class="phone">
+            <img src="img/app/adopcion.jpg" alt="Formulario para publicar animalitos en adopción" width="480" height="975" loading="lazy">
+            <figcaption>Dar en adopción</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Placa con QR ===== -->
+    <section class="section" id="placa">
+      <div class="container qr-inner">
+        <div class="qr-visual" aria-hidden="true">
+          <div class="tag">
+            <div class="tag-ring"></div>
+            <div class="tag-face">
+              <svg class="qr-art" id="qr-art" viewBox="0 0 25 25" shape-rendering="crispEdges"></svg>
+              <span class="tag-name">LUNA</span>
+            </div>
+          </div>
+          <div class="qr-alert">
+            <span class="qa-pin"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+            <div><strong>¡Encontraron a Luna!</strong><span>Escanearon su placa · Ver ubicación</span></div>
+          </div>
+        </div>
+        <div class="qr-copy">
+          <span class="eyebrow">Placa identificatoria</span>
+          <h2>Si se pierde, que vuelva a casa</h2>
+          <p class="app-lead">El mismo código QR de la credencial de tu mascota, grabado en una placa para el collar o la correa.</p>
+          <ol class="qr-steps">
+            <li><strong>Alguien la encuentra</strong> y escanea el QR de la placa con su celular.</li>
+            <li><strong>Ve los datos de la mascota y del dueño</strong> para poder contactarte.</li>
+            <li><strong>Te envía la ubicación</strong> del lugar donde leyó el QR.</li>
+          </ol>
+          <p class="qr-extra">Y si la reportás como perdida en la app, toda la comunidad Gema recibe la alerta para ayudarte a buscarla.</p>
+          <div class="qr-buy">
+            <div class="qr-option">
+              <h3>¿Sos afiliado?</h3>
+              <p>Pedí la placa para tu mascota.</p>
+              <a class="btn btn-block" href="https://wa.me/5491126719012?text=Hola%20Gema%2C%20soy%20afiliado%2Fa%20y%20quiero%20solicitar%20la%20placa%20con%20QR%20para%20mi%20mascota." target="_blank" rel="noopener">Solicitar placa</a>
+            </div>
+            <div class="qr-option">
+              <h3>¿No sos afiliado?</h3>
+              <p>También podés comprarla.</p>
+              <a class="btn btn-accent btn-block" href="https://wa.me/5491126719012?text=Hola%20Gema%2C%20no%20soy%20afiliado%2Fa%20y%20quiero%20comprar%20la%20placa%20identificatoria%20con%20QR%20para%20mi%20mascota." target="_blank" rel="noopener">Comprar placa</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== Cartilla ===== -->
     <section class="section section-tint" id="cartilla">
       <div class="container">
@@ -482,9 +568,8 @@
               allowfullscreen></iframe>
           </div>
           <div class="cartilla-side">
-            <div class="cs-stat"><strong>100+</strong><span>profesionales veterinarios</span></div>
-            <div class="cs-stat"><strong>+50</strong><span>instituciones adheridas</span></div>
-            <p>En la app podés buscar por nombre, centro o servicio y filtrar laboratorios y peluquerías.</p>
+            <h3>Encontrá tu veterinaria</h3>
+            <p>Tocá cada huella del mapa para ver la dirección y los servicios. En la app podés buscar por nombre, centro o servicio y filtrar laboratorios y peluquerías.</p>
             <a class="btn btn-block" href="https://www.google.com/maps/d/viewer?mid=17Rr7r2m6skxD-S35V62cQdrX0-yQI3Y" target="_blank" rel="noopener">Abrir el mapa completo</a>
             <a class="btn btn-ghost btn-block" href="https://wa.me/5491126719012?text=Hola%20Gema%2C%20soy%20veterinario%2Fa%20y%20quiero%20sumarme%20a%20la%20red%20de%20prestadores." target="_blank" rel="noopener">¿Sos veterinario? Sumate a la red</a>
           </div>
@@ -604,6 +689,7 @@
         <a href="#planes">Planes</a>
         <a href="#cotizador">Cotizador</a>
         <a href="#app">App</a>
+        <a href="#perdidas">Mascotas perdidas</a>
         <a href="#cartilla">Cartilla</a>
         <a href="#faq">Preguntas</a>
       </nav>
