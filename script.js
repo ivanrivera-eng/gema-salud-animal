@@ -109,6 +109,8 @@ const qPlans = document.getElementById('q-plans');
 const qPerros = document.getElementById('q-perros');
 const qGatos = document.getElementById('q-gatos');
 let nombreMascota = ''; // llega desde la credencial de demostración de la portada
+let ultimaCotizacion = null; // la lee la afiliación
+let afiliacionLista = false;
 
 document.getElementById('q-servicios').innerHTML = SERVICIOS.map(s => `
   <label class="chip"><input type="checkbox" name="q-servicio" value="${s.id}"><span>${s.nombre}</span></label>`).join('');
@@ -222,6 +224,10 @@ function cotizar({ desdeServicios = false } = {}) {
     `• Cuota estimada: ${pesos(suma)}/mes`,
   ].filter(Boolean).join('\n');
   waBtn.href = waLink(mensaje);
+  document.getElementById('qr-afiliar').classList.toggle('is-disabled', total === 0);
+
+  ultimaCotizacion = { planId, credito, perros, gatos, lineas, suma, ahorro };
+  if (afiliacionLista) actualizarAfiliacion();
 }
 
 qForm.addEventListener('change', e => {
@@ -296,14 +302,263 @@ demoForm.addEventListener('submit', e => {
   e.preventDefault();
   const gato = especieDemo() === 'gato';
   nombreMascota = demoNombre.value.trim();
+  guardarMascotas();
+  if (nombreMascota) {
+    const clave = `${gato ? 'gato' : 'perro'}-0`;
+    datosMascotas[clave] = { ...datosMascotas[clave], nombre: nombreMascota };
+  }
+  omitirGuardado = true;
   qPerros.value = gato ? 0 : 1;
   qGatos.value = gato ? 1 : 0;
   cotizar();
-  const lead = document.getElementById('lead-form');
-  if (nombreMascota) lead.mascota.value = nombreMascota;
-  lead.especie.value = gato ? 'Gato' : 'Perro';
   document.getElementById('cotizador').scrollIntoView({ behavior: 'smooth' });
 });
+
+// ===== Afiliación en 3 pasos =====
+// Plan, cantidad de mascotas y forma de pago salen del cotizador (una sola fuente de verdad);
+// especie y nombre pueden venir de la credencial de la portada. Nada se guarda: se envía por WhatsApp.
+const afForm = document.getElementById('afil-form');
+const afPets = document.getElementById('af-pets');
+const afPlans = document.getElementById('af-plans');
+const afMsg = afForm.querySelector('.co-msg');
+const datosMascotas = {}; // lo escrito en cada tarjeta, por clave "perro-0", "gato-1"...
+let omitirGuardado = false;
+let pasoActual = 1;
+let pasoMaximo = 1;
+
+const escapar = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const EDADES = ['Menos de 1 año', ...Array.from({ length: 14 }, (_, i) => `${i + 1} ${i ? 'años' : 'año'}`), '15 años o más'];
+
+afPlans.innerHTML = ORDEN_PLANES.map(id => {
+  const p = PLANES[id];
+  return `
+  <label class="q-plan" style="--gem:${p.color}" data-plan="${id}">
+    <input type="radio" name="af-plan" value="${id}">
+    <span class="q-plan-body">${gemaSVG(p.color)}<span class="q-plan-text"><span class="q-plan-name">${p.nombre}</span><span class="q-plan-price"></span></span></span>
+  </label>`;
+}).join('');
+
+function guardarMascotas() {
+  afPets.querySelectorAll('.pet-card').forEach(card => {
+    datosMascotas[card.dataset.key] = Object.fromEntries(
+      [...card.querySelectorAll('[data-campo]')].map(el => [el.dataset.campo, el.value]));
+  });
+}
+
+function mascotasCotizadas() {
+  const c = ultimaCotizacion;
+  return [
+    ...Array.from({ length: c.perros }, (_, n) => ({ especie: 'perro', key: `perro-${n}` })),
+    ...Array.from({ length: c.gatos }, (_, n) => ({ especie: 'gato', key: `gato-${n}` })),
+  ];
+}
+
+function tarjetaMascota(m, i) {
+  const d = datosMascotas[m.key] || {};
+  const especie = m.especie === 'gato' ? 'Gato' : 'Perro';
+  const id = campo => `af-${m.key}-${campo}`;
+  const opciones = (lista, valor) => lista.map(o => `<option${o === valor ? ' selected' : ''}>${o}</option>`).join('');
+  return `
+  <article class="pet-card" data-key="${m.key}">
+    <header>
+      <span class="pet-badge pb-${m.especie}">${especie}</span>
+      <h4>Mascota ${i + 1}</h4>
+      <span class="pet-price" data-precio></span>
+      <button type="button" class="pet-remove" data-remove="${m.key}" aria-label="Quitar mascota ${i + 1}">×</button>
+    </header>
+    <div class="co-grid">
+      <div class="field"><label for="${id('nombre')}">Nombre</label><input id="${id('nombre')}" data-campo="nombre" type="text" maxlength="30" value="${escapar(d.nombre)}" required></div>
+      <div class="field"><label for="${id('raza')}">Raza</label><input id="${id('raza')}" data-campo="raza" type="text" maxlength="40" placeholder="Ej.: Mestizo" value="${escapar(d.raza)}"></div>
+      <div class="field"><label for="${id('edad')}">Edad</label><select id="${id('edad')}" data-campo="edad" required><option value="">Seleccioná</option>${opciones(EDADES, d.edad)}</select></div>
+      <div class="field"><label for="${id('sexo')}">Sexo</label><select id="${id('sexo')}" data-campo="sexo" required><option value="">Seleccioná</option>${opciones(['Macho', 'Hembra'], d.sexo)}</select></div>
+    </div>
+  </article>`;
+}
+
+function nombreMostrado(m, i) {
+  return (datosMascotas[m.key]?.nombre || '').trim() || `Mascota ${i + 1}`;
+}
+
+function pintarResumen() {
+  const c = ultimaCotizacion;
+  const plan = PLANES[c.planId];
+  const mascotas = mascotasCotizadas();
+  document.getElementById('af-sum-plan').innerHTML = `${gemaSVG(plan.color)}<div><strong>Plan ${plan.nombre}</strong><span>${mascotas.length} ${mascotas.length === 1 ? 'mascota' : 'mascotas'}</span></div>`;
+  document.getElementById('af-sum-lines').innerHTML = mascotas.length
+    ? mascotas.map((m, i) => {
+        const l = c.lineas[i];
+        return `<li><span>${escapar(nombreMostrado(m, i))}${l.descuento ? ` <em>−${pct(l.descuento)} grupo</em>` : ''}</span><b>${pesos(l.precio)}</b></li>`;
+      }).join('')
+    : '<li class="co-empty">Todavía no sumaste mascotas.</li>';
+  document.getElementById('af-sum-saving').textContent = c.ahorro > 0 ? pesos(c.ahorro) : '—';
+  document.getElementById('af-sum-total').textContent = pesos(c.suma);
+  document.getElementById('af-sum-pay').textContent = c.credito
+    ? 'Pago con tarjeta de crédito: incluye el descuento del plan.'
+    : 'Pago con otros medios: sin el descuento de tarjeta.';
+  afPets.querySelectorAll('.pet-card').forEach((card, i) => {
+    const l = c.lineas[i];
+    card.querySelector('[data-precio]').innerHTML = `${pesos(l.precio)}/mes${l.descuento ? ` <em>−${pct(l.descuento)}</em>` : ''}`;
+  });
+}
+
+function actualizarAfiliacion() {
+  if (omitirGuardado) omitirGuardado = false;
+  else guardarMascotas();
+  const c = ultimaCotizacion;
+  const mascotas = mascotasCotizadas();
+  afPets.innerHTML = mascotas.length
+    ? mascotas.map(tarjetaMascota).join('')
+    : '<p class="pets-empty">Todavía no sumaste mascotas: elegí si es un perro o un gato.</p>';
+  afPlans.querySelector(`[value="${c.planId}"]`).checked = true;
+  afPlans.querySelectorAll('.q-plan').forEach(l => {
+    l.querySelector('.q-plan-price').textContent = pesos(precioPlan(PLANES[l.dataset.plan], c.credito)) + '/mes';
+  });
+  afForm.querySelector(`[name="af-pago"][value="${c.credito ? 'credito' : 'otro'}"]`).checked = true;
+  pintarResumen();
+}
+
+function irAPaso(n) {
+  pasoActual = n;
+  pasoMaximo = Math.max(pasoMaximo, n);
+  afForm.querySelectorAll('.co-panel').forEach(p => { p.hidden = Number(p.dataset.step) !== n; });
+  document.querySelectorAll('.co-steps button').forEach(b => {
+    const s = Number(b.dataset.goto);
+    if (s === n) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    b.classList.toggle('is-done', s < n);
+    b.disabled = s > pasoMaximo;
+  });
+  document.querySelectorAll('#af-progress li').forEach(li => {
+    const s = Number(li.dataset.step);
+    li.classList.toggle('is-current', s === n);
+    li.classList.toggle('is-done', s < n);
+  });
+  document.getElementById('af-back').hidden = n === 1;
+  document.getElementById('af-next').textContent = n === 3 ? 'Enviar solicitud' : 'Continuar';
+  afMsg.textContent = '';
+}
+
+function validarPaso(n) {
+  const panel = afForm.querySelector(`.co-panel[data-step="${n}"]`);
+  let primero = null;
+  panel.querySelectorAll('[required]').forEach(el => {
+    let ok = el.type === 'checkbox' ? el.checked : el.value.trim() !== '' && el.checkValidity();
+    if (el.name === 'telefono') ok = ok && el.value.replace(/\D/g, '').length >= 8;
+    el.classList.toggle('invalid', !ok);
+    if (!ok && !primero) primero = el;
+  });
+  let error = '';
+  if (n === 2 && !mascotasCotizadas().length) error = 'Sumá al menos una mascota para continuar.';
+  else if (primero) error = primero.type === 'checkbox' ? 'Aceptá que te contactemos para enviar la solicitud.' : 'Revisá los campos marcados.';
+  if (!error) return true;
+  afMsg.textContent = error;
+  afMsg.className = 'co-msg error';
+  primero?.focus();
+  return false;
+}
+
+function enviarAfiliacion() {
+  guardarMascotas();
+  const f = afForm.elements;
+  const c = ultimaCotizacion;
+  const mascotas = mascotasCotizadas();
+  const lineasMascotas = mascotas.map((m, i) => {
+    const d = datosMascotas[m.key] || {};
+    const detalle = [m.especie === 'gato' ? 'Gato' : 'Perro', d.raza, d.edad, d.sexo].filter(Boolean).join(', ');
+    return `• ${d.nombre}: ${detalle} (${pesos(c.lineas[i].precio)}/mes)`;
+  });
+  const mensaje = [
+    'Hola Gema, quiero afiliar a mis mascotas. Envío mis datos desde la web:',
+    '',
+    '*Titular*',
+    `• ${f.nombre.value.trim()} ${f.apellido.value.trim()}`,
+    `• ${f.docTipo.value}: ${f.docNumero.value.trim()}`,
+    `• Email: ${f.email.value.trim()}`,
+    `• Teléfono: ${f.telefono.value.trim()}`,
+    `• Localidad: ${f.localidad.value.trim()}`,
+    '',
+    '*Mascotas*',
+    ...lineasMascotas,
+    '',
+    `*Plan:* ${PLANES[c.planId].nombre}`,
+    `*Pago:* ${c.credito ? 'tarjeta de crédito' : 'otros medios de pago'}`,
+    `*Total estimado:* ${pesos(c.suma)}/mes${c.ahorro > 0 ? ` (ahorro ${pesos(c.ahorro)})` : ''}`,
+  ].join('\n');
+  const url = waLink(mensaje);
+  window.open(url, '_blank', 'noopener');
+  document.getElementById('af-wa-again').href = url;
+  afForm.hidden = true;
+  document.querySelector('.co-steps').hidden = true;
+  document.getElementById('af-done').hidden = false;
+}
+
+afForm.addEventListener('submit', e => {
+  e.preventDefault();
+  if (!validarPaso(pasoActual)) return;
+  if (pasoActual < 3) {
+    irAPaso(pasoActual + 1);
+    document.getElementById('afiliacion').scrollIntoView({ behavior: 'smooth' });
+  } else {
+    enviarAfiliacion();
+  }
+});
+
+afForm.addEventListener('input', e => {
+  e.target.classList.remove('invalid');
+  if (e.target.closest('.pet-card')) { guardarMascotas(); pintarResumen(); }
+});
+
+afForm.addEventListener('change', e => {
+  if (e.target.name === 'af-plan') {
+    qForm.querySelector(`[name="q-plan"][value="${e.target.value}"]`).checked = true;
+    planElegidoAMano = true;
+    cotizar();
+  }
+  if (e.target.name === 'af-pago') {
+    qForm.querySelector(`[name="q-pago"][value="${e.target.value}"]`).checked = true;
+    cotizar();
+  }
+});
+
+afForm.addEventListener('click', e => {
+  const agregar = e.target.closest('[data-add]');
+  if (agregar) {
+    const c = ultimaCotizacion;
+    if (c.perros + c.gatos >= MAX_MASCOTAS) {
+      afMsg.textContent = `Podés afiliar hasta ${MAX_MASCOTAS} mascotas desde la web.`;
+      afMsg.className = 'co-msg error';
+      return;
+    }
+    const input = agregar.dataset.add === 'gato' ? qGatos : qPerros;
+    input.value = leerCantidad(input) + 1;
+    cotizar();
+  }
+  const quitar = e.target.closest('[data-remove]');
+  if (quitar) {
+    // Corre los datos de las mascotas siguientes de la misma especie para no perder lo escrito.
+    guardarMascotas();
+    const [especie, n] = quitar.dataset.remove.split('-');
+    const input = especie === 'gato' ? qGatos : qPerros;
+    const total = leerCantidad(input);
+    for (let j = Number(n); j < total - 1; j++) datosMascotas[`${especie}-${j}`] = datosMascotas[`${especie}-${j + 1}`];
+    delete datosMascotas[`${especie}-${total - 1}`];
+    input.value = total - 1;
+    omitirGuardado = true;
+    cotizar();
+  }
+});
+
+document.querySelectorAll('.co-steps button').forEach(b => {
+  b.addEventListener('click', () => {
+    const destino = Number(b.dataset.goto);
+    if (destino > pasoActual && !validarPaso(pasoActual)) return;
+    irAPaso(destino);
+  });
+});
+document.getElementById('af-back').addEventListener('click', () => irAPaso(pasoActual - 1));
+
+afiliacionLista = true;
+actualizarAfiliacion();
+irAPaso(1);
 
 // ===== Detalle de planes: solapas =====
 const tabs = document.querySelectorAll('.detail-tabs [role="tab"]');
@@ -346,39 +601,8 @@ mostrarSolapa(tabs[0]);
   svgs.forEach(svg => { svg.innerHTML = `<path d="${d}" fill-rule="evenodd"/>`; });
 })();
 
-// ===== Formulario de contacto: continúa en WhatsApp =====
-const form = document.getElementById('lead-form');
-const msg = form.querySelector('.form-msg');
-
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  const nombre = form.nombre.value.trim();
-  form.nombre.classList.toggle('invalid', !nombre);
-  if (!nombre) {
-    msg.textContent = 'Escribí tu nombre para continuar.';
-    msg.className = 'form-msg error';
-    form.nombre.focus();
-    return;
-  }
-
-  const mascota = form.mascota.value.trim();
-  const consulta = form.consulta.value.trim();
-  const texto = [
-    `Hola Gema, soy ${nombre}.`,
-    `Tengo ${form.especie.value === 'Gato' ? 'un gato' : 'un perro'}${mascota ? ' que se llama ' + mascota : ''}.`,
-    form.plan.value === 'Todavía no sé'
-      ? 'Quiero que me asesoren para elegir un plan.'
-      : `Me interesa el plan ${form.plan.value}.`,
-    consulta ? `Consulta: ${consulta}` : '',
-  ].filter(Boolean).join(' ');
-
-  window.open(waLink(texto), '_blank', 'noopener');
-  msg.textContent = 'Abrimos WhatsApp con tu mensaje listo. Si no se abrió, escribinos al +54 9 11 2671-9012.';
-  msg.className = 'form-msg ok';
-});
-
 // ===== Animación de aparición al hacer scroll =====
-const revealTargets = document.querySelectorAll('.section-head, .steps li, .plan, .quote-tool, .detail-panel, .app-copy, .phone, .lost-card, .qr-copy, .qr-visual, .cartilla, .faq details, .form');
+const revealTargets = document.querySelectorAll('.section-head, .steps li, .plan, .quote-tool, .detail-panel, .app-copy, .phone, .lost-card, .qr-copy, .qr-visual, .cartilla, .faq details, .checkout');
 revealTargets.forEach(el => el.classList.add('reveal'));
 
 const observer = new IntersectionObserver(entries => {

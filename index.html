@@ -336,7 +336,7 @@
               <svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3Zm0 23.7c-2 0-4-.6-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.7 10.7 0 1 1 16 26.7Zm5.9-8c-.3-.2-1.9-1-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.8 8.8 0 0 1-4.4-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6 0-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5l-.6-.4Z" fill="currentColor"/></svg>
               Pedir esta cotización por WhatsApp
             </a>
-            <a class="btn btn-ghost-light btn-block" href="https://app.gemasa.com.ar" target="_blank" rel="noopener">Afiliate desde la app</a>
+            <a class="btn btn-ghost-light btn-block" href="#afiliacion" id="qr-afiliar">Continuar con la afiliación</a>
             <p class="qr-note">Valores de referencia. Confirmá condiciones, carencias y topes con un asesor.</p>
           </aside>
           </div>
@@ -663,54 +663,111 @@
       </div>
     </section>
 
-    <!-- ===== Contacto ===== -->
-    <section class="section cta paw-pattern" id="sumate">
-      <div class="container cta-inner">
-        <div class="cta-copy">
-          <span class="eyebrow eyebrow-light">Contacto</span>
-          <h2>¿Querés que te asesoremos?</h2>
-          <p>Dejanos tus datos y seguimos la conversación por WhatsApp con un asesor de Gema.</p>
-          <ul class="cta-contact">
-            <li><strong>WhatsApp:</strong> +54 9 11 2671-9012</li>
-            <li><strong>Instagram:</strong> <a href="https://www.instagram.com/gemasaludanimal" target="_blank" rel="noopener">@gemasaludanimal</a></li>
-          </ul>
+    <!-- ===== Afiliación ===== -->
+    <section class="section cta paw-pattern" id="afiliacion">
+      <div class="container">
+        <div class="section-head section-head-light">
+          <span class="eyebrow eyebrow-light">Afiliación</span>
+          <h2>Afiliá a tu mascota</h2>
+          <p>Completá tus datos y los de tu mascota. Un asesor de Gema te contacta para confirmar el alta y coordinar el pago.</p>
         </div>
 
-        <form class="form" id="lead-form" novalidate>
-          <div class="field">
-            <label for="nombre">Tu nombre</label>
-            <input id="nombre" name="nombre" type="text" autocomplete="name" required>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="mascota">Nombre de tu mascota</label>
-              <input id="mascota" name="mascota" type="text">
+        <div class="checkout">
+          <div class="co-main">
+            <ol class="co-steps" aria-label="Pasos de la afiliación">
+              <li><button type="button" data-goto="1" aria-current="step"><span>1</span>Tus datos</button></li>
+              <li><button type="button" data-goto="2"><span>2</span>Mascotas</button></li>
+              <li><button type="button" data-goto="3"><span>3</span>Plan y pago</button></li>
+            </ol>
+
+            <form class="co-form" id="afil-form" novalidate>
+              <!-- Paso 1 -->
+              <fieldset class="co-panel" data-step="1">
+                <legend class="sr-only">Tus datos</legend>
+                <div class="co-grid">
+                  <div class="field"><label for="af-nombre">Nombre</label><input id="af-nombre" name="nombre" type="text" autocomplete="given-name" required></div>
+                  <div class="field"><label for="af-apellido">Apellido</label><input id="af-apellido" name="apellido" type="text" autocomplete="family-name" required></div>
+                  <div class="field"><label for="af-email">Email</label><input id="af-email" name="email" type="email" autocomplete="email" required></div>
+                  <div class="field">
+                    <label for="af-tel">Teléfono</label>
+                    <input id="af-tel" name="telefono" type="tel" autocomplete="tel" inputmode="tel" placeholder="Ej.: 387 4123456" required>
+                    <small class="field-help">Código de área sin el 0 y número sin el 15.</small>
+                  </div>
+                  <div class="field">
+                    <label for="af-doc-tipo">Tipo de documento</label>
+                    <select id="af-doc-tipo" name="docTipo" required>
+                      <option value="">Seleccioná</option>
+                      <option>DNI</option>
+                      <option>Pasaporte</option>
+                      <option>CUIT / CUIL</option>
+                    </select>
+                  </div>
+                  <div class="field"><label for="af-doc">Número de documento</label><input id="af-doc" name="docNumero" type="text" inputmode="numeric" required></div>
+                  <div class="field co-span"><label for="af-localidad">Localidad</label><input id="af-localidad" name="localidad" type="text" autocomplete="address-level2" placeholder="Ej.: Salta Capital" required></div>
+                </div>
+              </fieldset>
+
+              <!-- Paso 2 -->
+              <fieldset class="co-panel" data-step="2" hidden>
+                <legend class="sr-only">Mascotas</legend>
+                <div class="pets" id="af-pets"></div>
+                <div class="pets-add">
+                  <span>Sumar otra mascota:</span>
+                  <button type="button" class="btn btn-ghost btn-small" data-add="perro">+ Perro</button>
+                  <button type="button" class="btn btn-ghost btn-small" data-add="gato">+ Gato</button>
+                </div>
+                <p class="co-hint">Desde la 2.ª mascota se aplica el descuento por grupo familiar.</p>
+              </fieldset>
+
+              <!-- Paso 3 -->
+              <fieldset class="co-panel" data-step="3" hidden>
+                <legend class="sr-only">Plan y pago</legend>
+                <p class="co-label">Plan</p>
+                <div class="q-plans co-plans" id="af-plans"></div>
+                <p class="co-label">Forma de pago</p>
+                <div class="chips" role="radiogroup" aria-label="Forma de pago">
+                  <label class="chip"><input type="radio" name="af-pago" value="credito" checked><span>Tarjeta de crédito (con descuento)</span></label>
+                  <label class="chip"><input type="radio" name="af-pago" value="otro"><span>Otros medios de pago</span></label>
+                </div>
+                <label class="co-check"><input type="checkbox" id="af-acepto" name="acepto" required><span>Acepto que Gema me contacte para confirmar el alta. Conozco que cada plan tiene <a href="#detalle">carencias y topes</a>.</span></label>
+              </fieldset>
+
+              <div class="co-actions">
+                <p class="co-msg" role="status" aria-live="polite"></p>
+                <button type="button" class="btn btn-ghost" id="af-back" hidden>Regresar</button>
+                <button type="submit" class="btn" id="af-next">Continuar</button>
+              </div>
+            </form>
+
+            <div class="co-done" id="af-done" hidden>
+              <div class="co-done-icon"><svg viewBox="0 0 24 24"><path d="m6 12 4 4 8-9"/></svg></div>
+              <h3>¡Listo! Abrimos WhatsApp con tu solicitud</h3>
+              <p>Enviá el mensaje y un asesor de Gema te contacta para confirmar el alta y coordinar el pago. Si WhatsApp no se abrió, escribinos al +54 9 11 2671-9012.</p>
+              <div class="co-done-actions">
+                <a class="btn btn-accent" id="af-wa-again" href="#" target="_blank" rel="noopener">Abrir WhatsApp de nuevo</a>
+                <a class="btn btn-ghost" href="https://app.gemasa.com.ar" target="_blank" rel="noopener">Descargar la app</a>
+              </div>
             </div>
-            <div class="field">
-              <label for="especie">Especie</label>
-              <select id="especie" name="especie">
-                <option>Perro</option>
-                <option>Gato</option>
-              </select>
-            </div>
           </div>
-          <div class="field">
-            <label for="plan">Plan de interés</label>
-            <select id="plan" name="plan">
-              <option>Esmeralda</option>
-              <option>Zafiro</option>
-              <option>Rubí</option>
-              <option>Diamante</option>
-              <option selected>Todavía no sé</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="consulta">Consulta (opcional)</label>
-            <input id="consulta" name="consulta" type="text" placeholder="Ej.: ¿qué veterinarias hay cerca de mi casa?">
-          </div>
-          <button type="submit" class="btn btn-block">Continuar por WhatsApp</button>
-          <p class="form-msg" role="status" aria-live="polite"></p>
-        </form>
+
+          <aside class="co-summary" aria-live="polite">
+            <h3>Tu afiliación</h3>
+            <div class="co-plan" id="af-sum-plan"></div>
+            <ul class="co-lines" id="af-sum-lines"></ul>
+            <dl class="co-totals">
+              <div><dt>Ahorro por mes</dt><dd id="af-sum-saving">—</dd></div>
+              <div class="co-total"><dt>Total por mes</dt><dd id="af-sum-total">$0</dd></div>
+            </dl>
+            <p class="co-pay" id="af-sum-pay"></p>
+            <a href="#cotizador" class="co-edit">Modificar en el cotizador</a>
+            <ul class="co-progress" id="af-progress">
+              <li data-step="1"><span>1</span>Tus datos<small>Completá la información</small></li>
+              <li data-step="2"><span>2</span>Mascotas<small>Nombre, raza, edad y sexo</small></li>
+              <li data-step="3"><span>3</span>Plan y pago<small>Confirmá plan y forma de pago</small></li>
+            </ul>
+            <p class="co-secure"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>No te pedimos datos de tarjeta en la web.</p>
+          </aside>
+        </div>
       </div>
     </section>
   </main>
@@ -738,6 +795,7 @@
         <a href="#perdidas">Mascotas perdidas</a>
         <a href="#cartilla">Cartilla</a>
         <a href="#faq">Preguntas</a>
+        <a href="#afiliacion">Afiliate</a>
       </nav>
     </div>
     <div class="container footer-bottom">
