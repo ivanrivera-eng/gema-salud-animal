@@ -442,10 +442,6 @@ p { margin: 0 0 1em; }
 .app-features p { margin: 0; color: var(--ink-soft); font-size: .92rem; }
 .af-icon { display: grid; place-items: center; flex-shrink: 0; width: 42px; height: 42px; border-radius: 12px; background: #fff; box-shadow: 0 4px 14px -8px rgba(36,25,63,.4); }
 .af-icon svg { width: 22px; height: 22px; fill: none; stroke: var(--violet); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.app-gallery {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start;
-  min-width: 0;
-}
 .phone { margin: 0; text-align: center; }
 .phone img {
   width: 100%; height: auto;
@@ -454,8 +450,6 @@ p { margin: 0 0 1em; }
   box-shadow: 0 20px 40px -22px rgba(36,25,63,.55);
 }
 .phone figcaption { margin-top: 8px; font-size: .82rem; font-weight: 600; color: var(--violet); }
-.phone-main { grid-row: span 2; grid-column: span 1; }
-.app-gallery .phone:nth-child(4), .app-gallery .phone:nth-child(5) { display: none; }
 
 /* Cartilla */
 .cartilla { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: stretch; }
@@ -480,8 +474,6 @@ p { margin: 0 0 1em; }
 .lc-adopcion { --lc: var(--violet-soft); }
 .lc-icon { display: grid; place-items: center; flex-shrink: 0; width: 42px; height: 42px; border-radius: 12px; background: color-mix(in srgb, var(--lc) 14%, #fff); }
 .lc-icon svg { width: 22px; height: 22px; fill: none; stroke: var(--lc); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.lost-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start; min-width: 0; }
-.lost-gallery .phone:nth-child(2) { margin-top: 36px; }
 
 /* Placa con QR */
 .qr-inner { display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center; }
@@ -699,25 +691,11 @@ p { margin: 0 0 1em; }
 @media (max-width: 960px) {
   .checkout, .hero-inner, .app-inner, .quote-tool, .cartilla, .lost-inner, .qr-inner { grid-template-columns: 1fr; }
   .q-group-plan .q-plans { grid-template-columns: repeat(4, 1fr); }
-  .lost-gallery {
-    display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
-    padding-bottom: 12px; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
-    padding-inline: max(16px, env(safe-area-inset-left, 0px));
-  }
-  .lost-gallery .phone { flex: 0 0 200px; scroll-snap-align: center; }
-  .lost-gallery .phone:nth-child(2) { margin-top: 0; }
   .qr-visual { min-height: 360px; order: 2; }
   .hero { padding-top: 32px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .quote-result { position: static; }
   .co-summary { position: static; }
-  .app-gallery {
-    display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
-    padding-bottom: 12px; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
-    padding-inline: max(16px, env(safe-area-inset-left, 0px));
-  }
-  .app-gallery .phone { flex: 0 0 200px; scroll-snap-align: center; }
-  .app-gallery .phone:nth-child(4), .app-gallery .phone:nth-child(5) { display: block; }
   .map-frame { min-height: 380px; }
 }
 
@@ -855,3 +833,58 @@ main, .site-footer { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) {
   .bg-paw-inner::after { display: none; }
 }
+
+/* Tarjetas blancas sobre el fondo oscuro: recuperan el color de texto oscuro */
+.plan, .q-group, .steps li, .lost-card, .table-wrap, .detail-tabs, .cartilla-side, .qr-option { color: var(--ink); }
+.steps li h3 { color: var(--night); }
+
+/* Títulos de los pasos del cotizador dentro de la tarjeta (antes quedaban sobre el borde) */
+.q-group legend { float: left; width: 100%; margin-bottom: 14px; padding: 0; font-size: 1rem; }
+.q-group legend + * { clear: both; }
+
+/* Resultado del cotizador: recuadro propio, distinto del fondo */
+.quote-result {
+  background: linear-gradient(160deg, #3a2768, #2b1d50);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 26px 50px -24px rgba(0,0,0,.7);
+}
+
+/* ===== Celulares apilados: el que se toca pasa al frente ===== */
+.phone-stack { --pw: 290px; position: relative; min-width: 0; padding-top: 8px; }
+.stack-stage { position: relative; height: calc(var(--pw) * 2.03 + 12px); }
+.phone-stack .phone {
+  position: absolute; top: 0; left: 50%;
+  width: var(--pw); margin: 0 0 0 calc(var(--pw) / -2);
+  cursor: pointer;
+  transition: transform .55s cubic-bezier(.2, .8, .2, 1), opacity .45s, filter .45s;
+  -webkit-tap-highlight-color: transparent;
+}
+.phone-stack .phone img { border-width: 8px; border-radius: 34px; box-shadow: 0 30px 50px -24px rgba(0,0,0,.75); }
+.phone-stack .phone figcaption { display: none; }
+.phone-stack .phone:focus-visible { outline: none; }
+.phone-stack .phone:focus-visible img { outline: 3px solid var(--yellow); outline-offset: 4px; }
+.phone[data-pos="0"] { z-index: 5; transform: none; cursor: default; }
+.phone[data-pos="1"] { z-index: 4; transform: translateX(42%) scale(.84) rotate(6deg); filter: brightness(.78); }
+.phone[data-pos="2"] { z-index: 3; transform: translateX(-42%) scale(.84) rotate(-6deg); filter: brightness(.78); }
+.phone[data-pos="3"] { z-index: 2; transform: translateX(70%) scale(.7) rotate(11deg); filter: brightness(.6); opacity: .8; }
+.phone[data-pos="4"] { z-index: 1; transform: translateX(-70%) scale(.7) rotate(-11deg); filter: brightness(.6); opacity: .8; }
+.phone[data-pos]:not([data-pos="0"]):hover { filter: brightness(.95); }
+.stack-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 18px; }
+.stack-nav button {
+  display: grid; place-items: center; width: 40px; height: 40px;
+  border: 1px solid rgba(255,255,255,.25); border-radius: 50%;
+  background: rgba(255,255,255,.06); color: #fff; font-size: 1.3rem; cursor: pointer;
+}
+.stack-nav button:hover { background: rgba(255,255,255,.14); }
+.stack-caption { min-width: 150px; text-align: center; font-weight: 600; color: var(--lilac); }
+
+@media (max-width: 1100px) {
+  .phone-stack { --pw: 250px; }
+}
+@media (max-width: 640px) {
+  .phone-stack { --pw: 210px; }
+  .phone[data-pos="1"] { transform: translateX(40%) scale(.82) rotate(6deg); }
+  .phone[data-pos="2"] { transform: translateX(-40%) scale(.82) rotate(-6deg); }
+  .phone[data-pos="3"], .phone[data-pos="4"] { opacity: 0; pointer-events: none; }
+}
+#app, #perdidas { overflow-x: clip; }

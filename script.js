@@ -601,8 +601,51 @@ mostrarSolapa(tabs[0]);
   svgs.forEach(svg => { svg.innerHTML = `<path d="${d}" fill-rule="evenodd"/>`; });
 })();
 
+// ===== Celulares apilados: el que se toca pasa al frente =====
+// Posiciones: 0 al frente, 1 y 2 a los costados, 3 y 4 más atrás.
+document.querySelectorAll('.phone-stack').forEach(stack => {
+  const phones = [...stack.querySelectorAll('.phone')];
+  const stage = document.createElement('div');
+  stage.className = 'stack-stage';
+  phones.forEach(p => stage.appendChild(p));
+  stack.appendChild(stage);
+  stack.insertAdjacentHTML('beforeend', `
+    <div class="stack-nav">
+      <button type="button" data-dir="-1" aria-label="Pantalla anterior">‹</button>
+      <span class="stack-caption" aria-live="polite"></span>
+      <button type="button" data-dir="1" aria-label="Pantalla siguiente">›</button>
+    </div>`);
+  const caption = stack.querySelector('.stack-caption');
+  const n = phones.length;
+  let frente = 0;
+
+  function ordenar() {
+    phones.forEach((p, j) => {
+      const d = (j - frente + n) % n;
+      const pos = d === 0 ? 0 : d === 1 ? 1 : d === n - 1 ? 2 : d === 2 ? 3 : 4;
+      p.dataset.pos = pos;
+      p.tabIndex = pos === 0 ? -1 : 0;
+      p.setAttribute('role', 'button');
+      p.setAttribute('aria-label', `Ver pantalla: ${p.querySelector('figcaption').textContent}`);
+      p.setAttribute('aria-hidden', String(pos > 2));
+    });
+    caption.textContent = phones[frente].querySelector('figcaption').textContent;
+  }
+  phones.forEach((p, j) => {
+    p.addEventListener('click', () => { frente = j; ordenar(); });
+    p.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); frente = j; ordenar(); }
+    });
+  });
+  stack.querySelectorAll('[data-dir]').forEach(b => b.addEventListener('click', () => {
+    frente = (frente + Number(b.dataset.dir) + n) % n;
+    ordenar();
+  }));
+  ordenar();
+});
+
 // ===== Animación de aparición al hacer scroll =====
-const revealTargets = document.querySelectorAll('.section-head, .steps li, .plan, .quote-tool, .detail-panel, .app-copy, .phone, .lost-card, .qr-copy, .qr-visual, .cartilla, .faq details, .checkout');
+const revealTargets = document.querySelectorAll('.section-head, .steps li, .plan, .quote-tool, .detail-panel, .app-copy, .phone-stack, .lost-card, .qr-copy, .qr-visual, .cartilla, .faq details, .checkout');
 revealTargets.forEach(el => el.classList.add('reveal'));
 
 const observer = new IntersectionObserver(entries => {
