@@ -616,4 +616,58 @@ const observer = new IntersectionObserver(entries => {
 
 revealTargets.forEach(el => observer.observe(el));
 
+// ===== Huella de fondo que acompaña el scroll =====
+// En la portada queda grande detrás del celular; al bajar se corre de un lado a otro,
+// gira apenas y se vuelve tenue para no competir con el contenido. Sigue al scroll con un leve retraso.
+(function huellaDeFondo() {
+  const paw = document.querySelector('.bg-paw');
+  const phone = document.querySelector('.phone-mock');
+  const hero = document.querySelector('.hero');
+  if (!paw || !phone || !hero) return;
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const actual = { x: 0, y: 0, r: 0, s: 1, o: 1 };
+  const umbral = { x: .3, y: .3, r: .05, s: .001, o: .002 };
+  let primera = true;
+  let pedido = 0;
+
+  function objetivo() {
+    const vw = innerWidth, vh = innerHeight;
+    const p = phone.getBoundingClientRect();
+    const t = scrollY / vh; // pantallas recorridas
+    const chico = vw < 960;
+    const ancla = { x: p.left + p.width / 2 - vw / 2, y: p.top + p.height / 2 - vh / 2, r: -8, s: 1.15, o: 1 };
+    const viaje = {
+      x: Math.sin(t * 1.15) * vw * (chico ? .18 : .3),
+      y: Math.sin(t * .8) * vh * .14,
+      r: Math.sin(t * .6) * 18 + t * 4,
+      s: chico ? .75 : .85,
+      o: chico ? .15 : .22,
+    };
+    const k = Math.min(1, Math.max(0, (scrollY - hero.offsetHeight * .25) / (hero.offsetHeight * .55)));
+    const e = k * k * (3 - 2 * k); // transición suave al salir de la portada
+    const o = {};
+    for (const c in ancla) o[c] = ancla[c] + (viaje[c] - ancla[c]) * e;
+    return o;
+  }
+
+  function pintar() {
+    const o = objetivo();
+    const f = primera || quieto ? 1 : .08;
+    let sigue = false;
+    for (const c in actual) {
+      const d = o[c] - actual[c];
+      actual[c] += d * f;
+      if (Math.abs(d) > umbral[c]) sigue = true;
+    }
+    primera = false;
+    paw.style.transform = `translate(-50%, -50%) translate(${actual.x.toFixed(1)}px, ${actual.y.toFixed(1)}px) rotate(${actual.r.toFixed(2)}deg) scale(${actual.s.toFixed(3)})`;
+    paw.style.opacity = actual.o.toFixed(3);
+    pedido = sigue && !quieto ? requestAnimationFrame(pintar) : 0;
+  }
+  const pedir = () => { if (!pedido) pedido = requestAnimationFrame(pintar); };
+  addEventListener('scroll', pedir, { passive: true });
+  addEventListener('resize', pedir);
+  pintar();
+})();
+
 document.getElementById('year').textContent = new Date().getFullYear();
