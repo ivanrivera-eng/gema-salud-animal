@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gema Salud Animal</title>
   <meta name="claude:viewport-fit-sides" content="cover">
-  <meta name="description" content="Gema Salud Animal: obra social para perros y gatos en Salta. Planes Esmeralda, Zafiro, Rubí y Diamante, cotizador online, app con credencial digital y cartilla de veterinarias.">
+  <meta name="description" content="Gema Salud Animal: obra social para perros y gatos. Planes Esmeralda, Zafiro, Rubí y Diamante, cotizador online, app con credencial digital y cartilla de veterinarias.">
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta name="theme-color" content="#24193f">
@@ -178,6 +178,10 @@
           <span class="eyebrow">Planes</span>
           <h2>Un plan para cada etapa de su vida</h2>
           <p>Cada plan suma beneficios al anterior. Precio mensual por mascota.</p>
+          <div class="prov-switch" role="group" aria-label="Provincia">
+            <button type="button" data-provincia="salta" aria-pressed="true">Salta</button>
+            <button type="button" data-provincia="entrerios" aria-pressed="false">Entre Ríos</button>
+          </div>
         </div>
 
         <div class="plans">
@@ -284,6 +288,13 @@
             <fieldset class="q-group">
               <legend>1. ¿Cuántas mascotas querés afiliar?</legend>
               <div class="q-row">
+                <div class="field field-prov">
+                  <label for="q-provincia">Provincia</label>
+                  <select id="q-provincia" name="q-provincia">
+                    <option value="salta" selected>Salta</option>
+                    <option value="entrerios">Entre Ríos</option>
+                  </select>
+                </div>
                 <div class="field">
                   <label for="q-perros">Perros</label>
                   <div class="stepper">
@@ -783,7 +794,7 @@
           <img class="logo-paw" src="img/huella.png" alt="" width="54" height="50">
           <img class="logo-word" src="img/gema-texto-blanco.png" alt="Gema Salud animal" width="128" height="45">
         </a>
-        <p>Obra social para perros y gatos en Salta.</p>
+        <p>Obra social para perros y gatos.</p>
         <div class="socials">
           <a href="https://www.instagram.com/gemasaludanimal" target="_blank" rel="noopener">Instagram</a>
           <a href="https://www.facebook.com/profile.php?id=61577771855260" target="_blank" rel="noopener">Facebook</a>

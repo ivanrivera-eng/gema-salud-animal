@@ -320,7 +320,6 @@ p { margin: 0 0 1em; }
 .q-group legend { padding: 0 .4em; font-weight: 700; color: var(--night); }
 .q-group .field { margin-bottom: 0; }
 .q-row { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
-.q-row .field { flex: 1 1 200px; }
 .chips { display: flex; flex-wrap: wrap; gap: 10px; }
 .chip input, .q-plan input { position: absolute; opacity: 0; pointer-events: none; }
 .chip span {
@@ -895,3 +894,17 @@ main, .site-footer { position: relative; z-index: 1; }
   text-shadow: 0 1px 2px rgba(18, 10, 36, .9), 0 2px 14px rgba(18, 10, 36, .85);
 }
 .section-head p, .app-lead, .app-features p, .qr-steps li, .faq details p { color: rgba(255,255,255,.9); }
+
+/* Provincia: selector en el cotizador y botones en Planes */
+.q-row .field { flex: 1 1 150px; } /* provincia, perros y gatos en una fila */
+.prov-switch {
+  display: inline-flex; gap: 4px; margin-top: 18px; padding: 5px;
+  border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14);
+}
+.prov-switch button {
+  padding: .55em 1.5em; border: 0; border-radius: 999px;
+  background: transparent; color: rgba(255,255,255,.85);
+  font: 600 .95rem var(--font-body); cursor: pointer; transition: background .2s, color .2s;
+}
+.prov-switch button:hover { color: #fff; background: rgba(255,255,255,.08); }
+.prov-switch button[aria-pressed="true"] { background: var(--yellow); color: var(--night); }

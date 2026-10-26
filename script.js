@@ -11,6 +11,15 @@ const PLANES = {
 };
 const ORDEN_PLANES = ['esmeralda', 'zafiro', 'rubi', 'diamante']; // de menor a mayor cobertura
 
+// Provincias con servicio. En "precios" se cargan los valores propios de cada plan en esa provincia,
+// por ejemplo  esmeralda: { base: 55000, credito: 0.45 }. Vacío = mismos valores que la tabla PLANES (Salta).
+const PROVINCIAS = {
+  salta:     { nombre: 'Salta',      precios: {} },
+  entrerios: { nombre: 'Entre Ríos', precios: {} }, // valores a definir: por ahora iguales a Salta
+};
+let provincia = 'salta';
+const planEn = (id, prov = provincia) => ({ ...PLANES[id], ...PROVINCIAS[prov].precios[id] });
+
 // Botones de servicios del cotizador y qué planes los incluyen (solapa "Hoja2" del Excel).
 const SERVICIOS = [
   { id: 'consultas',     nombre: 'Consultas y controles',       planes: ['esmeralda', 'zafiro', 'rubi', 'diamante'] },
@@ -95,13 +104,20 @@ window.addEventListener('scroll', () => {
 
 // ===== Precios en las tarjetas de planes =====
 document.querySelectorAll('.plan[data-plan]').forEach(card => {
-  const p = PLANES[card.dataset.plan];
+  const p = planEn(card.dataset.plan);
   card.style.setProperty('--gem', p.color);
   card.querySelector('svg.gem').outerHTML = gemaSVG(p.color);
-  card.querySelector('.price-list').textContent = pesos(p.base);
-  card.querySelector('.amount').textContent = pesos(precioPlan(p, true));
-  card.querySelector('.price-note').innerHTML = `<b>${pct(p.credito)} off</b> con tarjeta de crédito`;
 });
+
+function pintarTarjetasPlanes() {
+  document.querySelectorAll('.plan[data-plan]').forEach(card => {
+    const p = planEn(card.dataset.plan);
+    card.querySelector('.price-list').textContent = pesos(p.base);
+    card.querySelector('.amount').textContent = pesos(precioPlan(p, true));
+    card.querySelector('.price-note').innerHTML = `<b>${pct(p.credito)} off</b> con tarjeta de crédito`;
+  });
+}
+pintarTarjetasPlanes();
 
 // ===== Cotizador =====
 const qForm = document.getElementById('quote-form');
@@ -116,7 +132,7 @@ document.getElementById('q-servicios').innerHTML = SERVICIOS.map(s => `
   <label class="chip"><input type="checkbox" name="q-servicio" value="${s.id}"><span>${s.nombre}</span></label>`).join('');
 
 qPlans.innerHTML = ORDEN_PLANES.map((id, i) => {
-  const p = PLANES[id];
+  const p = planEn(id);
   return `
   <label class="q-plan" style="--gem:${p.color}" data-plan="${id}">
     <input type="radio" name="q-plan" value="${id}" ${i === 0 ? 'checked' : ''}>
@@ -165,13 +181,13 @@ function cotizar({ desdeServicios = false } = {}) {
 
   const credito = qForm.querySelector('[name="q-pago"]:checked').value === 'credito';
   const planId = qForm.querySelector('[name="q-plan"]:checked').value;
-  const plan = PLANES[planId];
+  const plan = planEn(planId);
 
   // Tarjetas del paso "Plan": precio, ajuste a los servicios y recomendado
   qPlans.querySelectorAll('.q-plan').forEach(label => {
     const id = label.dataset.plan;
     const falta = faltantes(id, servicios);
-    label.querySelector('.q-plan-price').textContent = pesos(precioPlan(PLANES[id], credito)) + '/mes';
+    label.querySelector('.q-plan-price').textContent = pesos(precioPlan(planEn(id), credito)) + '/mes';
     const fit = label.querySelector('.q-plan-fit');
     fit.textContent = servicios.length && falta.length ? `Le ${falta.length === 1 ? 'falta 1 servicio' : `faltan ${falta.length} servicios`}` : '';
     label.classList.toggle('is-recommended', servicios.length > 0 && id === recomendado);
@@ -182,7 +198,7 @@ function cotizar({ desdeServicios = false } = {}) {
   aviso.hidden = !faltan.length;
   if (faltan.length) {
     aviso.innerHTML = `El plan ${plan.nombre} no incluye: <strong>${faltan.map(s => s.nombre.toLowerCase()).join(', ')}</strong>. ` +
-      `Para cubrir todo te conviene el plan <button type="button" class="link-btn" data-elegir="${recomendado}">${PLANES[recomendado].nombre}</button>.`;
+      `Para cubrir todo te conviene el plan <button type="button" class="link-btn" data-elegir="${recomendado}">${planEn(recomendado).nombre}</button>.`;
   }
 
   // Detalle por mascota con el descuento por grupo familiar
@@ -217,6 +233,7 @@ function cotizar({ desdeServicios = false } = {}) {
   const mensaje = [
     'Hola Gema, quiero afiliar a mis mascotas. Hice esta cotización en la web:',
     nombreMascota ? `• Nombre: ${nombreMascota}` : '',
+    `• Provincia: ${PROVINCIAS[provincia].nombre}`,
     `• Mascotas: ${detalleMascotas || '—'}`,
     servicios.length ? `• Servicios que busco: ${servicios.map(s => s.nombre.toLowerCase()).join(', ')}` : '',
     `• Plan: ${plan.nombre}`,
@@ -226,11 +243,22 @@ function cotizar({ desdeServicios = false } = {}) {
   waBtn.href = waLink(mensaje);
   document.getElementById('qr-afiliar').classList.toggle('is-disabled', total === 0);
 
-  ultimaCotizacion = { planId, credito, perros, gatos, lineas, suma, ahorro };
+  ultimaCotizacion = { planId, credito, perros, gatos, lineas, suma, ahorro, provincia };
   if (afiliacionLista) actualizarAfiliacion();
 }
 
+// La provincia se elige en el cotizador o con los botones de la sección Planes; ambos quedan sincronizados.
+function elegirProvincia(p) {
+  provincia = p;
+  document.getElementById('q-provincia').value = p;
+  document.querySelectorAll('[data-provincia]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.provincia === p)));
+  pintarTarjetasPlanes();
+  cotizar();
+}
+document.querySelectorAll('[data-provincia]').forEach(b => b.addEventListener('click', () => elegirProvincia(b.dataset.provincia)));
+
 qForm.addEventListener('change', e => {
+  if (e.target.name === 'q-provincia') { elegirProvincia(e.target.value); return; }
   if (e.target.name === 'q-plan') planElegidoAMano = true;
   if (e.target.name === 'q-servicio') planElegidoAMano = false;
   cotizar({ desdeServicios: e.target.name === 'q-servicio' });
@@ -330,7 +358,7 @@ const escapar = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '
 const EDADES = ['Menos de 1 año', ...Array.from({ length: 14 }, (_, i) => `${i + 1} ${i ? 'años' : 'año'}`), '15 años o más'];
 
 afPlans.innerHTML = ORDEN_PLANES.map(id => {
-  const p = PLANES[id];
+  const p = planEn(id);
   return `
   <label class="q-plan" style="--gem:${p.color}" data-plan="${id}">
     <input type="radio" name="af-plan" value="${id}">
@@ -381,9 +409,9 @@ function nombreMostrado(m, i) {
 
 function pintarResumen() {
   const c = ultimaCotizacion;
-  const plan = PLANES[c.planId];
+  const plan = planEn(c.planId);
   const mascotas = mascotasCotizadas();
-  document.getElementById('af-sum-plan').innerHTML = `${gemaSVG(plan.color)}<div><strong>Plan ${plan.nombre}</strong><span>${mascotas.length} ${mascotas.length === 1 ? 'mascota' : 'mascotas'}</span></div>`;
+  document.getElementById('af-sum-plan').innerHTML = `${gemaSVG(plan.color)}<div><strong>Plan ${plan.nombre}</strong><span>${mascotas.length} ${mascotas.length === 1 ? 'mascota' : 'mascotas'} · ${PROVINCIAS[c.provincia].nombre}</span></div>`;
   document.getElementById('af-sum-lines').innerHTML = mascotas.length
     ? mascotas.map((m, i) => {
         const l = c.lineas[i];
@@ -411,7 +439,7 @@ function actualizarAfiliacion() {
     : '<p class="pets-empty">Todavía no sumaste mascotas: elegí si es un perro o un gato.</p>';
   afPlans.querySelector(`[value="${c.planId}"]`).checked = true;
   afPlans.querySelectorAll('.q-plan').forEach(l => {
-    l.querySelector('.q-plan-price').textContent = pesos(precioPlan(PLANES[l.dataset.plan], c.credito)) + '/mes';
+    l.querySelector('.q-plan-price').textContent = pesos(precioPlan(planEn(l.dataset.plan), c.credito)) + '/mes';
   });
   afForm.querySelector(`[name="af-pago"][value="${c.credito ? 'credito' : 'otro'}"]`).checked = true;
   pintarResumen();
@@ -475,11 +503,12 @@ function enviarAfiliacion() {
     `• Email: ${f.email.value.trim()}`,
     `• Teléfono: ${f.telefono.value.trim()}`,
     `• Localidad: ${f.localidad.value.trim()}`,
+    `• Provincia: ${PROVINCIAS[c.provincia].nombre}`,
     '',
     '*Mascotas*',
     ...lineasMascotas,
     '',
-    `*Plan:* ${PLANES[c.planId].nombre}`,
+    `*Plan:* ${planEn(c.planId).nombre}`,
     `*Pago:* ${c.credito ? 'tarjeta de crédito' : 'otros medios de pago'}`,
     `*Total estimado:* ${pesos(c.suma)}/mes${c.ahorro > 0 ? ` (ahorro ${pesos(c.ahorro)})` : ''}`,
   ].join('\n');
