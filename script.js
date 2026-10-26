@@ -661,7 +661,7 @@ revealTargets.forEach(el => observer.observe(el));
 
 // ===== Huella de fondo que acompaña el scroll =====
 // En la portada queda grande detrás del celular; al bajar se corre de un lado a otro,
-// gira apenas y mantiene el brillo de la portada en todo el recorrido. Sigue al scroll con un leve retraso.
+// gira apenas y mantiene el brillo; al llegar al final vuelve al lugar donde empezó. Sigue al scroll con un leve retraso.
 (function huellaDeFondo() {
   const paw = document.querySelector('.bg-paw');
   const phone = document.querySelector('.phone-mock');
@@ -686,10 +686,17 @@ revealTargets.forEach(el => observer.observe(el));
       s: chico ? .75 : .85,
       o: 1,
     };
-    const k = Math.min(1, Math.max(0, (scrollY - hero.offsetHeight * .25) / (hero.offsetHeight * .55)));
-    const e = k * k * (3 - 2 * k); // transición suave al salir de la portada
+    // Posición en pantalla que tenía al cargar la página (detrás del celular, sin scroll)
+    const inicio = { ...ancla, y: p.top + scrollY + p.height / 2 - vh / 2 };
+    const suave = k => { k = Math.min(1, Math.max(0, k)); return k * k * (3 - 2 * k); };
+    const fin = Math.max(1, document.documentElement.scrollHeight - vh);
+    const salida = suave((scrollY - hero.offsetHeight * .25) / (hero.offsetHeight * .55)); // deja la portada
+    const regreso = suave(1 - (fin - scrollY) / (vh * 1.2)); // en la última pantalla y media vuelve al inicio
     const o = {};
-    for (const c in ancla) o[c] = ancla[c] + (viaje[c] - ancla[c]) * e;
+    for (const c in ancla) {
+      const recorrido = ancla[c] + (viaje[c] - ancla[c]) * salida;
+      o[c] = recorrido + (inicio[c] - recorrido) * regreso;
+    }
     return o;
   }
 
