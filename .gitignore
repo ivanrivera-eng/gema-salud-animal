@@ -8,3 +8,6 @@ referencias/
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Copias descargables del proyecto
+*.zip
