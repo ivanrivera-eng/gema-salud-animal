@@ -661,7 +661,7 @@ revealTargets.forEach(el => observer.observe(el));
 
 // ===== Huella de fondo que acompaña el scroll =====
 // En la portada queda grande detrás del celular; al bajar se corre de un lado a otro,
-// gira apenas y se vuelve tenue para no competir con el contenido. Sigue al scroll con un leve retraso.
+// gira apenas y mantiene el brillo de la portada en todo el recorrido. Sigue al scroll con un leve retraso.
 (function huellaDeFondo() {
   const paw = document.querySelector('.bg-paw');
   const phone = document.querySelector('.phone-mock');
@@ -684,7 +684,7 @@ revealTargets.forEach(el => observer.observe(el));
       y: Math.sin(t * .8) * vh * .14,
       r: Math.sin(t * .6) * 18 + t * 4,
       s: chico ? .75 : .85,
-      o: chico ? .15 : .22,
+      o: 1,
     };
     const k = Math.min(1, Math.max(0, (scrollY - hero.offsetHeight * .25) / (hero.offsetHeight * .55)));
     const e = k * k * (3 - 2 * k); // transición suave al salir de la portada
